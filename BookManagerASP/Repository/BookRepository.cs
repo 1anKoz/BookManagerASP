@@ -12,6 +12,28 @@ namespace BookManagerASP.Repository
             _context = context;
         }
 
+        public Book GetBook(int id)
+        {
+            return _context.Books.Where(b => b.Id == id).FirstOrDefault();
+        }
+
+        public Book GetBook(string title = null, string author = null)
+        {
+            var query = _context.Books.AsQueryable();
+
+            if (!string.IsNullOrEmpty(title))
+            {
+                query = query.Where(b => b.Title == title);
+            }
+
+            if (!string.IsNullOrEmpty(author))
+            {
+                query = query.Where(b => b.Author == author);
+            }
+
+            return query.FirstOrDefault();
+        }
+
         public ICollection<Book> GetBooks()
         {
             return _context.Books.OrderBy(b => b.Id).ToList();
