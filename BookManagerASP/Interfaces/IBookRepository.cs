@@ -7,5 +7,6 @@ namespace BookManagerASP.Interfaces
         ICollection<Book> GetBooks();
         Book GetBook(int id);
         Book GetBook(string title = null, string author = null);
+        int GetBookRating(int id);
     }
 }
