@@ -10,7 +10,7 @@
         public virtual Book Book { get; set; }
         public int BookId { get; set; }
 
-        public int UserEntityId { get; set; }
-        public UserEntity UserEntity { get; set; }
+        public int ShelfId { get; set; }
+        public Shelf Shelf { get; set; }
     }
 }
