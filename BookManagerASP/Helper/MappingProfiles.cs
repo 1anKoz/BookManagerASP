@@ -10,6 +10,8 @@ namespace BookManagerASP.Helper
         {
             CreateMap<Book, BookDto>();
             CreateMap<BookDto, Book>();
+            CreateMap<QuoteDto, Quote>();
+            CreateMap<Quote, QuoteDto>();
         }
     }
 }
