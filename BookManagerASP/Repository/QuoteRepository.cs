@@ -24,8 +24,20 @@ namespace BookManagerASP.Repository
         }
         public ICollection<Quote> GetFavouriteQuotes()
         {
-            return _context.Quotes.Where(q => q.IsFavourite == true).ToList();
+            return _context.Quotes.Where(q => q.IsFavourite == true)
+                .OrderBy(q => q.Id).ToList();
         }
 
+        public bool CreateQuote(Quote quote)
+        {
+            _context.Add(quote);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }

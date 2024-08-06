@@ -25,14 +25,12 @@ namespace BookManagerASP.Controllers
             var quotes = _mapper.Map<List<QuoteDto>>(_quoteRepository.GetQuotes());
 
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             return Ok(quotes);
         }
 
-        [HttpGet]
+        [HttpGet("/favourites")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Quote>))]
         [ProducesResponseType(400)]
         public IActionResult GetFavouriteQuotes()
@@ -40,11 +38,29 @@ namespace BookManagerASP.Controllers
             var quotes = _mapper.Map<List<QuoteDto>>(_quoteRepository.GetFavouriteQuotes());
 
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
 
             return Ok(quotes);
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateQuote([FromBody] QuoteDto quoteCreate)
+        {
+            if (quoteCreate == null || !ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var quoteMap = _mapper.Map<Quote>(quoteCreate);
+
+            if(!_quoteRepository.CreateQuote(quoteMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok(quoteMap);
         }
     }
 }
