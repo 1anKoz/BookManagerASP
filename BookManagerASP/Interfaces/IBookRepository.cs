@@ -8,5 +8,6 @@ namespace BookManagerASP.Interfaces
         Book GetBook(int id);
         Book GetBook(string title = null, string author = null);
         int GetBookRating(int id);
+        bool BookExists(int bookId);
     }
 }

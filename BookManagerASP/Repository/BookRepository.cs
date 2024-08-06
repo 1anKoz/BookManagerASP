@@ -12,6 +12,11 @@ namespace BookManagerASP.Repository
             _context = context;
         }
 
+        public bool BookExists(int bookId)
+        {
+            return _context.Books.Any(p => p.Id == bookId);
+        }
+
         public Book GetBook(int id)
         {
             return _context.Books.Where(b => b.Id == id).FirstOrDefault();
