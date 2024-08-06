@@ -12,6 +12,8 @@ namespace BookManagerASP.Helper
             CreateMap<BookDto, Book>();
             CreateMap<QuoteDto, Quote>();
             CreateMap<Quote, QuoteDto>();
+            CreateMap<UserEntity, UserEntityDto>();
+            CreateMap<UserEntityDto, UserEntity>();
         }
     }
 }
