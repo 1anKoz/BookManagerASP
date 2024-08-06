@@ -2,10 +2,13 @@
 using BookManagerASP.Dto;
 using BookManagerASP.Interfaces;
 using BookManagerASP.Models;
+using BookManagerASP.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookManagerASP.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class UserEntityController : ControllerBase
     {
         private readonly IUserEntityRepository _userEntityRepository;
@@ -15,6 +18,22 @@ namespace BookManagerASP.Controllers
         {
             _userEntityRepository = userEntityRepository;
             _mapper = mapper;
+        }
+
+        [HttpGet("{email}")]
+        [ProducesResponseType(200, Type = typeof(UserEntity))]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetUserByEmailAsync(string email)
+        {
+            if (!_userEntityRepository.UserExists(email))
+                return NotFound();
+
+            var userDto = _mapper.Map<UserEntityDto>(await _userEntityRepository.GetUserByEmailAsync(email));
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(userDto);
         }
 
         [HttpPost("CreateUser")]

@@ -41,7 +41,7 @@ namespace BookManagerASP.Controllers
             if (!_bookRepository.BookExists(bookId))
                 return NotFound();
 
-            var book = _mapper.Map<List<BookDto>>(_bookRepository.GetBook(bookId));
+            var book = _mapper.Map<BookDto>(_bookRepository.GetBook(bookId));
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);

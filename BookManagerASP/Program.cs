@@ -25,7 +25,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 });
 builder.Services.AddIdentity<UserEntity, IdentityRole>()
-    .AddEntityFrameworkStores<DataContext>();
+    .AddEntityFrameworkStores<DataContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
