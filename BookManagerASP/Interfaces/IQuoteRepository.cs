@@ -7,5 +7,8 @@ namespace BookManagerASP.Interfaces
         ICollection<Quote> GetQuotes();
         ICollection<Quote> GetFavouriteQuotes();
         //bool QuoteExists(int quoteId);
+
+        bool CreateQuote(Quote quote);
+        bool Save();
     }
 }
