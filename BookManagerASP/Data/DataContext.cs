@@ -1,10 +1,11 @@
 ﻿using BookManagerASP.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 
 namespace BookManagerASP.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<UserEntity>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -21,6 +22,8 @@ namespace BookManagerASP.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<BookUserReview>()
                 .HasKey(bur => new { bur.UserEntityId, bur.ReviewId, bur.BookId });
             modelBuilder.Entity<BookUserReview>()

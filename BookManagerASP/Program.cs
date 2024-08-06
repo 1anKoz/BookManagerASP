@@ -1,6 +1,9 @@
 using BookManagerASP.Data;
 using BookManagerASP.Interfaces;
+using BookManagerASP.Models;
 using BookManagerASP.Repository;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -20,6 +23,12 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 });
+builder.Services.AddIdentity<UserEntity, IdentityRole>()
+    .AddEntityFrameworkStores<DataContext>();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie();
 
 var app = builder.Build();
 
