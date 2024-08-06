@@ -17,6 +17,7 @@ namespace BookManagerASP.Data
         public DbSet<UserEntity> UserEntities { get; set; }
         public DbSet<Shelf> Shelves { get; set; }
         public DbSet<BookUserReview> BookUserReviews { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
