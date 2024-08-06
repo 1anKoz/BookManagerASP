@@ -17,6 +17,7 @@ namespace BookManagerASP.Repository
             return _context.Books.Any(p => p.Id == bookId);
         }
 
+
         public Book GetBook(int id)
         {
             return _context.Books.Where(b => b.Id == id).FirstOrDefault();
@@ -53,6 +54,18 @@ namespace BookManagerASP.Repository
         public ICollection<Book> GetBooks()
         {
             return _context.Books.OrderBy(b => b.Id).ToList();
+        }
+
+
+        public bool CreateBook(Book book)
+        {
+            _context.Add(book);
+            return Save();
+        }
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
     }
 }
