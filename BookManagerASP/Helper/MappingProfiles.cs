@@ -9,6 +9,7 @@ namespace BookManagerASP.Helper
         public MappingProfiles()
         {
             CreateMap<Book, BookDto>();
+            CreateMap<BookDto, Book>();
         }
     }
 }

@@ -64,5 +64,38 @@ namespace BookManagerASP.Controllers
 
             return Ok(rating);
         }
+
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateBook([FromBody] BookDto bookCreate)
+        {
+            if(bookCreate == null)
+                return BadRequest(ModelState);
+
+            var book = _bookRepository.GetBooks()
+                .Where(b => b.Title.Trim().ToUpper() == bookCreate.Title.TrimEnd().ToUpper())
+                .FirstOrDefault();
+
+            if(book != null)
+            {
+                ModelState.AddModelError("", "Book already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var bookMap = _mapper.Map<Book>(bookCreate);
+
+            if(!_bookRepository.CreateBook(bookMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
     }
 }
