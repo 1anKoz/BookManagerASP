@@ -14,7 +14,9 @@ namespace BookManagerASP.Helper
             CreateMap<QuoteDto, Quote>();
             CreateMap<Quote, QuoteDto>();
 
-            CreateMap<UserEntity, UserEntityDto>();
+            CreateMap<UserEntity, UserEntityDto>(MemberList.Source)
+                 .ForMember(dest => dest.Password, opt => opt.Ignore());
+
             CreateMap<UserEntityDto, UserEntity>();
         }
     }

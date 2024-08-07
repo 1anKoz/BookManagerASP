@@ -8,6 +8,8 @@ namespace BookManagerASP.Repository
 {
     public class UserEntityRepository : IUserEntityRepository
     {
+        protected ILookupNormalizer normalizer;
+
         private readonly UserManager<UserEntity> _userManager;
 
         public UserEntityRepository(UserManager<UserEntity> userManager)
@@ -22,7 +24,18 @@ namespace BookManagerASP.Repository
 
         public async Task<UserEntity> GetUserByEmailAsync(string email)
         {
-            return await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                // Log or debug here
+                Console.WriteLine($"User with email {email} not found.");
+            }
+            else
+            {
+                // Log or debug here
+                Console.WriteLine($"User with email {email} found: {user.UserName}");
+            }
+            return user;
         }
 
         public async Task<IdentityResult> CreateUserAsync(UserEntity user, string password)

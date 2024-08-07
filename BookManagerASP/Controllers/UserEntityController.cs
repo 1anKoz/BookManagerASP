@@ -26,11 +26,26 @@ namespace BookManagerASP.Controllers
         public async Task<IActionResult> GetUserByEmailAsync(string email)
         {
             if (!_userEntityRepository.UserExists(email))
+            {
+                Console.WriteLine($"User with email {email} does not exist.");
                 return NotFound();
+            }
 
-            var userDto = _mapper.Map<UserEntityDto>(await _userEntityRepository.GetUserByEmailAsync(email));
+            var userEntity = await _userEntityRepository.GetUserByEmailAsync(email);
+            Console.WriteLine("####User entity: " + userEntity);
+            var userDto = _mapper.Map<UserEntityDto>(userEntity);
 
-            if(!ModelState.IsValid)
+            if (userDto == null)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"Mapping failed for user with email {email}.");
+            }
+            else
+            {
+                Console.WriteLine($"Successfully mapped user with email {email}.");
+            }
+
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             return Ok(userDto);
