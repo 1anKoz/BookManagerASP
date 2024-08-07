@@ -18,6 +18,16 @@ namespace BookManagerASP.Repository
         }
 
 
+        public ICollection<Book> GetBooks()
+        {
+            return _context.Books.OrderBy(b => b.Id).ToList();
+        }
+
+        public ICollection<Book> GetBooksByAuthor(string author)
+        {
+            return _context.Books.Where(b => b.Author == author).OrderBy(b => b.Id).ToList();
+        }
+
         public Book GetBook(int id)
         {
             return _context.Books.Where(b => b.Id == id).FirstOrDefault();
@@ -49,11 +59,6 @@ namespace BookManagerASP.Repository
                 return 0;
             }
             return (int)review.Sum(r => r.Rating) / review.Count();
-        }
-
-        public ICollection<Book> GetBooks()
-        {
-            return _context.Books.OrderBy(b => b.Id).ToList();
         }
 
 

@@ -22,7 +22,7 @@ namespace BookManagerASP.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet("AllBooks")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Book>))]
         public IActionResult GetBooks()
         {
@@ -34,8 +34,25 @@ namespace BookManagerASP.Controllers
             return Ok(books);
         }
 
+        [HttpGet("GetBooks")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Book>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetBooksByAuthor(string author)
+        {
+            var books = _mapper.Map<List<BookDto>>(_bookRepository.GetBooksByAuthor(author));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(books);
+        }
+
+        //później będzie można zostawić tutaj szukanie po Id, a w metodzie GetBooksByAuthor
+        //umożliwić szukanie po tytułach (umożliwi to być może szukanie i proponowanie książek
+        //nawet jeśli niecały tytuł będzie wpisany). Oczywiście, wówczas również trzeba będzie
+        //zwracać LISTĘ książek, których tytuły pasują do wpisywanego.
         [HttpGet("GetBook")]
-        [ProducesResponseType(200, Type = typeof(BookDto))]
+        [ProducesResponseType(200, Type = typeof(Book))]
         [ProducesResponseType(400)]
         public IActionResult GetBook([FromQuery] int? bookId = null, [FromQuery] string? title = null)
         {
