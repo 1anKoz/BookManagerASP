@@ -23,7 +23,7 @@ namespace BookManagerASP.Repository
             return _context.Books.Where(b => b.Id == id).FirstOrDefault();
         }
 
-        public Book GetBook(string title = null, string author = null)
+        public Book GetBook(string title = null/*, string author = null*/)
         {
             var query = _context.Books.AsQueryable();
 
@@ -32,10 +32,10 @@ namespace BookManagerASP.Repository
                 query = query.Where(b => b.Title == title);
             }
 
-            if (!string.IsNullOrEmpty(author))
-            {
-                query = query.Where(b => b.Author == author);
-            }
+            //if (!string.IsNullOrEmpty(author))
+            //{
+            //    query = query.Where(b => b.Author == author);
+            //}
 
             return query.FirstOrDefault();
         }

@@ -5,6 +5,7 @@ using BookManagerASP.Models;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Net;
 
 namespace BookManagerASP.Controllers
 {
@@ -33,20 +34,39 @@ namespace BookManagerASP.Controllers
             return Ok(books);
         }
 
-        [HttpGet("{bookId}")]
-        [ProducesResponseType(200, Type = typeof(Book))]
+        [HttpGet("GetBook")]
+        [ProducesResponseType(200, Type = typeof(BookDto))]
         [ProducesResponseType(400)]
-        public IActionResult GetBook(int bookId)
+        public IActionResult GetBook([FromQuery] int? bookId = null, [FromQuery] string? title = null)
         {
-            if (!_bookRepository.BookExists(bookId))
-                return NotFound();
+            if (!bookId.HasValue && string.IsNullOrEmpty(title))
+            {
+                return BadRequest("Either bookId or title must be provided.");
+            }
 
-            var book = _mapper.Map<BookDto>(_bookRepository.GetBook(bookId));
+            Book book = null;
 
-            if(!ModelState.IsValid)
+            if (bookId.HasValue)
+            {
+                if (!_bookRepository.BookExists(bookId.Value))
+                    return NotFound();
+
+                book = _bookRepository.GetBook(bookId.Value);
+            }
+            else if (!string.IsNullOrEmpty(title))
+            {
+                book = _bookRepository.GetBook(title);
+
+                if (book == null)
+                    return NotFound();
+            }
+
+            var bookDto = _mapper.Map<BookDto>(book);
+
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(book);
+            return Ok(bookDto);
         }
 
         [HttpGet("{bookId}/rating")]
