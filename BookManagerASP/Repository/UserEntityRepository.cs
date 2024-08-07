@@ -3,6 +3,7 @@ using BookManagerASP.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Reflection.Metadata;
 
 namespace BookManagerASP.Repository
 {
@@ -17,30 +18,31 @@ namespace BookManagerASP.Repository
             _userManager = userManager;
         }
 
-        public bool UserExists(string email)
+        public bool UserExists(string parameter)
         {
-            return _userManager.Users.Any(u => u.Email == email);
+            if (parameter.Contains("@"))
+            {
+                return _userManager.Users.Any(u => u.Email == parameter);
+            }
+
+            return _userManager.Users.Any(u => u.UserName == parameter);
         }
 
-        public async Task<UserEntity> GetUserByEmailAsync(string email)
+        public async Task<UserEntity> GetUser(string parameter)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
+            if (parameter.Contains("@"))
             {
-                // Log or debug here
-                Console.WriteLine($"User with email {email} not found.");
+                return await _userManager.FindByEmailAsync(parameter);
             }
-            else
-            {
-                // Log or debug here
-                Console.WriteLine($"User with email {email} found: {user.UserName}");
-            }
-            return user;
+
+            return _userManager.Users.Where(un => un.UserName == parameter).FirstOrDefault();
         }
+
 
         public async Task<IdentityResult> CreateUserAsync(UserEntity user, string password)
         {
             return await _userManager.CreateAsync(user, password);
         }
+
     }
 }

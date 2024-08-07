@@ -20,30 +20,18 @@ namespace BookManagerASP.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{email}")]
+        [HttpGet("GetUser")]
         [ProducesResponseType(200, Type = typeof(UserEntity))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetUserByEmailAsync(string email)
+        public async Task<IActionResult> GetUserByEmailAsync(string parameter)
         {
-            if (!_userEntityRepository.UserExists(email))
+            if (!_userEntityRepository.UserExists(parameter))
             {
-                Console.WriteLine($"User with email {email} does not exist.");
                 return NotFound();
             }
 
-            var userEntity = await _userEntityRepository.GetUserByEmailAsync(email);
-            Console.WriteLine("####User entity: " + userEntity);
+            var userEntity = await _userEntityRepository.GetUser(parameter);
             var userDto = _mapper.Map<UserEntityDto>(userEntity);
-
-            if (userDto == null)
-            {
-                Console.WriteLine();
-                Console.WriteLine($"Mapping failed for user with email {email}.");
-            }
-            else
-            {
-                Console.WriteLine($"Successfully mapped user with email {email}.");
-            }
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

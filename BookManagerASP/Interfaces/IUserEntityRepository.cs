@@ -5,7 +5,7 @@ namespace BookManagerASP.Interfaces
 {
     public interface IUserEntityRepository
     {
-        Task<UserEntity> GetUserByEmailAsync(string email);
+        Task<UserEntity> GetUser(string parameter);
 
         Task<IdentityResult> CreateUserAsync(UserEntity user, string password);
 
