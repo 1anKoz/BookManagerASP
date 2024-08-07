@@ -15,6 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IQuoteRepository, QuoteRepository>();
+builder.Services.AddScoped<IUserEntityRepository, UserEntityRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -24,7 +25,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 });
 builder.Services.AddIdentity<UserEntity, IdentityRole>()
-    .AddEntityFrameworkStores<DataContext>();
+    .AddEntityFrameworkStores<DataContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -40,6 +42,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseSession();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

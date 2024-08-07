@@ -10,8 +10,14 @@ namespace BookManagerASP.Helper
         {
             CreateMap<Book, BookDto>();
             CreateMap<BookDto, Book>();
+            
             CreateMap<QuoteDto, Quote>();
             CreateMap<Quote, QuoteDto>();
+
+            CreateMap<UserEntity, UserEntityDto>(MemberList.Source)
+                 .ForMember(dest => dest.Password, opt => opt.Ignore());
+
+            CreateMap<UserEntityDto, UserEntity>();
         }
     }
 }
