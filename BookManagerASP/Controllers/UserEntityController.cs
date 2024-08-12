@@ -23,14 +23,14 @@ namespace BookManagerASP.Controllers
         [HttpGet("GetUser")]
         [ProducesResponseType(200, Type = typeof(UserEntity))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetUserByEmailAsync(string parameter)
+        public async Task<IActionResult> GetUserAsync(string userNameOrEmail)
         {
-            if (!_userEntityRepository.UserExists(parameter))
+            if (!_userEntityRepository.UserExists(userNameOrEmail))
             {
                 return NotFound();
             }
 
-            var userEntity = await _userEntityRepository.GetUser(parameter);
+            var userEntity = await _userEntityRepository.GetUser(userNameOrEmail);
             var userDto = _mapper.Map<UserEntityDto>(userEntity);
 
             if (!ModelState.IsValid)

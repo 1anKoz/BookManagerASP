@@ -5,10 +5,10 @@ namespace BookManagerASP.Interfaces
 {
     public interface IUserEntityRepository
     {
-        Task<UserEntity> GetUser(string parameter);
+        Task<UserEntity> GetUser(string userNameOrEmail);
 
         Task<IdentityResult> CreateUserAsync(UserEntity user, string password);
 
-        public bool UserExists(string email);
+        public bool UserExists(string userNameOrEmail);
     }
 }
