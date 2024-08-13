@@ -34,7 +34,7 @@ namespace BookManagerASP.Controllers
             return Ok(books);
         }
 
-        [HttpGet("GetBooks")]
+        [HttpGet("{author}/GetBooks")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Book>))]
         [ProducesResponseType(400)]
         public IActionResult GetBooksByAuthor(string author)
