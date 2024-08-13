@@ -19,6 +19,36 @@ namespace BookManagerASP.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("AllShelves")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Shelf>))]
+        public IActionResult GetAllShelves()
+        {
+            var shelves = _mapper.Map<List<ShelfDto>>(_shelfRepository.GetAllShelves());
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(shelves);
+        }
+
+        [HttpGet("/{shelfId}")]
+        [ProducesResponseType(200, Type = typeof(Shelf))]
+        [ProducesResponseType(400)]
+        public IActionResult GetShelf(int shelfId)
+        {
+            if (!_shelfRepository.ShelfExists(shelfId))
+                return NotFound();
+
+            var shelf = _shelfRepository.GetShelf(shelfId);
+            var shelfDto = _mapper.Map<ShelfDto>(shelf);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(shelfDto);
+        }
+
+
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
