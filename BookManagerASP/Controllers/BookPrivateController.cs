@@ -27,11 +27,25 @@ namespace BookManagerASP.Controllers
             _quoteRepository = quoteRepository;
         }
 
+        [HttpGet("GetBookPrivates/{author}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<BookPrivate>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetBookPrivatesByAuthor(string author)
+        {
+            var bookPrivates = _mapper.Map<List<BookPrivateDto>>(
+                _bookPrivateRepository.GetBookPrivatesByBookAuthor(author));
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(bookPrivates);
+        }
+
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateBookPrivate([FromBody] BookPrivateDto bookPrivateDto/*,*/
-            /*[FromQuery] int shelfId, [FromQuery] int bookId, [FromQuery] int quoteId*/)
+        public IActionResult CreateBookPrivate([FromBody] BookPrivateDto bookPrivateDto,
+            [FromQuery] int shelfId, [FromQuery] int bookId/*, [FromQuery] int? quoteId = null*/)
         {
             if (bookPrivateDto == null)
                 return BadRequest(ModelState);
@@ -51,10 +65,10 @@ namespace BookManagerASP.Controllers
 
             var bookPrivateMap = _mapper.Map<BookPrivate>(bookPrivateDto);
 
-            //bookPrivateMap.Shelf = _shelfRepository.GetShelf(shelfId);
-            //bookPrivateMap.Book = _bookRepository.GetBook(bookId);
+            bookPrivateMap.Shelf = _shelfRepository.GetShelf(shelfId);
+            bookPrivateMap.Book = _bookRepository.GetBook(bookId);
             //bookPrivateMap.Quotes.Add(_quoteRepository.GetQuote(quoteId));
-            
+
 
             if (!_bookPrivateRepository.CreateBookPrivate(bookPrivateMap))
             {

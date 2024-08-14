@@ -38,18 +38,18 @@ namespace BookManagerASP.Controllers
             return Ok(reviews);
         }
 
-        [HttpGet("{bookId}/GetBookReviews")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Review>))]
-        [ProducesResponseType(400)]
-        public IActionResult GetBookReviews(int bookId)
-        {
-            var reviews = _mapper.Map<List<ReviewDto>>(_reviewRepository.GetBookReviews(bookId));
+        //[HttpGet("{bookId}/GetBookReviews")]
+        //[ProducesResponseType(200, Type = typeof(IEnumerable<Review>))]
+        //[ProducesResponseType(400)]
+        //public IActionResult GetBookReviews(int bookId)
+        //{
+        //    var reviews = _mapper.Map<List<ReviewDto>>(_reviewRepository.GetBookReviews(bookId));
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
 
-            return Ok(reviews);
-        }
+        //    return Ok(reviews);
+        //}
 
         [HttpGet("{reviewId}")]
         [ProducesResponseType(200, Type = typeof(Review))]

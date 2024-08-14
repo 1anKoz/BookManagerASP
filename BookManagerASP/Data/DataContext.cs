@@ -17,27 +17,26 @@ namespace BookManagerASP.Data
         public DbSet<BookPrivate> BooksPrivates { get; set; }
         public DbSet<UserEntity> UserEntities { get; set; }
         public DbSet<Shelf> Shelves { get; set; }
-        public DbSet<BookUserReview> BookUserReviews { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<BookUserReview>()
-                .HasKey(bur => new { bur.UserEntityId, bur.ReviewId, bur.BookId });
-            modelBuilder.Entity<BookUserReview>()
-                .HasOne(u => u.UserEntity)
-                .WithMany(bur => bur.BookUserReviews)
-                .HasForeignKey(u => u.UserEntityId);
-            modelBuilder.Entity<BookUserReview>()
-                .HasOne(r => r.Review)
-                .WithMany(bur => bur.BookUserReviews)
-                .HasForeignKey(r => r.ReviewId);
-            modelBuilder.Entity<BookUserReview>()
-                .HasOne(b => b.Book)
-                .WithMany(bur => bur.BookUserReviews)
-                .HasForeignKey(b => b.BookId);
+            //modelBuilder.Entity<BookUserReview>()
+            //    .HasKey(bur => new { bur.UserEntityId, bur.ReviewId, bur.BookId });
+            //modelBuilder.Entity<BookUserReview>()
+            //    .HasOne(u => u.UserEntity)
+            //    .WithMany(bur => bur.BookUserReviews)
+            //    .HasForeignKey(u => u.UserEntityId);
+            //modelBuilder.Entity<BookUserReview>()
+            //    .HasOne(r => r.Review)
+            //    .WithMany(bur => bur.BookUserReviews)
+            //    .HasForeignKey(r => r.ReviewId);
+            //modelBuilder.Entity<BookUserReview>()
+            //    .HasOne(b => b.Book)
+            //    .WithMany(bur => bur.BookUserReviews)
+            //    .HasForeignKey(b => b.BookId);
         }
     }
 }

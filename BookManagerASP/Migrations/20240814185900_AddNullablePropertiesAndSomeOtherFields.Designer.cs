@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookManagerASP.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240806191738_Identity")]
-    partial class Identity
+    [Migration("20240814185900_AddNullablePropertiesAndSomeOtherFields")]
+    partial class AddNullablePropertiesAndSomeOtherFields
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,9 +36,16 @@ namespace BookManagerASP.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CoverUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Isbn")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -67,6 +74,9 @@ namespace BookManagerASP.Migrations
                     b.Property<bool>("IsFavourite")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("Rating")
+                        .HasColumnType("int");
+
                     b.Property<int>("ShelfId")
                         .HasColumnType("int");
 
@@ -79,26 +89,6 @@ namespace BookManagerASP.Migrations
                     b.ToTable("BooksPrivates");
                 });
 
-            modelBuilder.Entity("BookManagerASP.Models.BookUserReview", b =>
-                {
-                    b.Property<string>("UserEntityId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ReviewId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserEntityId", "ReviewId", "BookId");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("ReviewId");
-
-                    b.ToTable("BookUserReviews");
-                });
-
             modelBuilder.Entity("BookManagerASP.Models.Quote", b =>
                 {
                     b.Property<int>("Id")
@@ -107,7 +97,7 @@ namespace BookManagerASP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("BookPrivateId")
+                    b.Property<int>("BookPrivateId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
@@ -135,14 +125,24 @@ namespace BookManagerASP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Content")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserEntityId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("BookId");
+
+                    b.HasIndex("UserEntityId");
 
                     b.ToTable("Reviews");
                 });
@@ -155,11 +155,18 @@ namespace BookManagerASP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IconUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserEntityId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -182,12 +189,15 @@ namespace BookManagerASP.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -195,7 +205,7 @@ namespace BookManagerASP.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("NickName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -215,6 +225,9 @@ namespace BookManagerASP.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -391,45 +404,45 @@ namespace BookManagerASP.Migrations
                     b.Navigation("Shelf");
                 });
 
-            modelBuilder.Entity("BookManagerASP.Models.BookUserReview", b =>
+            modelBuilder.Entity("BookManagerASP.Models.Quote", b =>
+                {
+                    b.HasOne("BookManagerASP.Models.BookPrivate", "BookPrivate")
+                        .WithMany("Quotes")
+                        .HasForeignKey("BookPrivateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BookPrivate");
+                });
+
+            modelBuilder.Entity("BookManagerASP.Models.Review", b =>
                 {
                     b.HasOne("BookManagerASP.Models.Book", "Book")
-                        .WithMany("BookUserReviews")
+                        .WithMany("Reviews")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BookManagerASP.Models.Review", "Review")
-                        .WithMany("BookUserReviews")
-                        .HasForeignKey("ReviewId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("BookManagerASP.Models.UserEntity", "UserEntity")
-                        .WithMany("BookUserReviews")
+                        .WithMany("Reviews")
                         .HasForeignKey("UserEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Book");
 
-                    b.Navigation("Review");
-
                     b.Navigation("UserEntity");
-                });
-
-            modelBuilder.Entity("BookManagerASP.Models.Quote", b =>
-                {
-                    b.HasOne("BookManagerASP.Models.BookPrivate", null)
-                        .WithMany("Quotes")
-                        .HasForeignKey("BookPrivateId");
                 });
 
             modelBuilder.Entity("BookManagerASP.Models.Shelf", b =>
                 {
-                    b.HasOne("BookManagerASP.Models.UserEntity", null)
+                    b.HasOne("BookManagerASP.Models.UserEntity", "UserEntity")
                         .WithMany("Shelves")
-                        .HasForeignKey("UserEntityId");
+                        .HasForeignKey("UserEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserEntity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -485,17 +498,12 @@ namespace BookManagerASP.Migrations
 
             modelBuilder.Entity("BookManagerASP.Models.Book", b =>
                 {
-                    b.Navigation("BookUserReviews");
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("BookManagerASP.Models.BookPrivate", b =>
                 {
                     b.Navigation("Quotes");
-                });
-
-            modelBuilder.Entity("BookManagerASP.Models.Review", b =>
-                {
-                    b.Navigation("BookUserReviews");
                 });
 
             modelBuilder.Entity("BookManagerASP.Models.Shelf", b =>
@@ -505,7 +513,7 @@ namespace BookManagerASP.Migrations
 
             modelBuilder.Entity("BookManagerASP.Models.UserEntity", b =>
                 {
-                    b.Navigation("BookUserReviews");
+                    b.Navigation("Reviews");
 
                     b.Navigation("Shelves");
                 });

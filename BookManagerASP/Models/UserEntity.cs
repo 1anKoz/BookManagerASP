@@ -6,10 +6,9 @@ namespace BookManagerASP.Models
     {
         public string Name { get; set; }
         public string LastName { get; set; }
-        //public string? PhotoUrl { get; set; }
+        public string? PhotoUrl { get; set; }
 
         public virtual ICollection<Shelf> Shelves { get; set; }
-
-        public ICollection<BookUserReview> BookUserReviews { get; set; }
+        public virtual ICollection<Review> Reviews { get; set; }
     }
 }
