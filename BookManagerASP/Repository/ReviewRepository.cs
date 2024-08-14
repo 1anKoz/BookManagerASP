@@ -58,5 +58,10 @@ namespace BookManagerASP.Repository
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
+
+        public ICollection<Review> GetBookReviews(int bookId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

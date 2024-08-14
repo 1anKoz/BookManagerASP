@@ -36,7 +36,7 @@ namespace BookManagerASP.Repository
 
         public ICollection<BookPrivate> GetBookPrivatesByBookAuthor(string author)
         {
-            throw new NotImplementedException();
+            return _context.BooksPrivates.Where(b => b.Book.Author == author).OrderBy(b => b.Id).ToList();
         }
 
         public ICollection<BookPrivate> GetBookPrivatesOnShelf(int shelfId)

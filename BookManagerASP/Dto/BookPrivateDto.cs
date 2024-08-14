@@ -6,7 +6,7 @@ namespace BookManagerASP.Dto
     {
         public int Id { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<Quote>? Quotes { get; set; }
+        //public virtual ICollection<Quote>? Quotes { get; set; }
         public int? Rating { get; set; }
         public bool IsFavourite { get; set; }
 

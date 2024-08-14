@@ -18,7 +18,7 @@ namespace BookManagerASP.Repository
             return _context.Quotes.Any(q => q.Id == quoteId);
         }
 
-        public Quote GetQuote(int quoteId)
+        public Quote GetQuote(int? quoteId)
         {
             return _context.Quotes.Where(q => q.Id == quoteId).FirstOrDefault();
         }
@@ -43,6 +43,11 @@ namespace BookManagerASP.Repository
         {
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
+        }
+
+        public ICollection<Quote> GetBookPrivateQuotes(int bookPrivateId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

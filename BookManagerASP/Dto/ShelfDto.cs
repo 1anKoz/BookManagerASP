@@ -9,7 +9,7 @@ namespace BookManagerASP.Dto
         public string? Description { get; set; }
         public string? IconUrl { get; set; }
 
-        public virtual ICollection<BookPrivate> BookPrivates { get; set; }
+        //public virtual ICollection<BookPrivate> BookPrivates { get; set; }
 
         public string UserEntityId { get; set; }
     }
