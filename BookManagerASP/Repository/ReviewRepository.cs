@@ -41,5 +41,22 @@ namespace BookManagerASP.Repository
             return _context.Reviews.Where(r => r.Id == reviewId).FirstOrDefault();
         }
 
+        public ICollection<Review> GetUserReviews(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public bool CreateReview(Review review)
+        {
+            _context.Add(review);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }
