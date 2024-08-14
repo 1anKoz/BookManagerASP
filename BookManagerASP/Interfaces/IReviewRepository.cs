@@ -8,7 +8,7 @@ namespace BookManagerASP.Interfaces
 
         Review GetReview(int reviewId);
         ICollection<Review> GetAllReviews();
-        ICollection<Review> GetBookReviews(int bookId);
+        //ICollection<Review> GetBookReviews(int bookId);
         ICollection<Review> GetUserReviews(string userId);
 
         bool CreateReview(Review review);

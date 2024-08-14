@@ -9,6 +9,6 @@
         //public string CoverUrl { get; set; }
         //public int Isbn { get; set; }
 
-        public ICollection<BookUserReview> BookUserReviews { get; set; }
+        public ICollection<Review> Reviews { get; set; }
     }
 }
