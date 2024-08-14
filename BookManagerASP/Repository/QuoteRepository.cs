@@ -13,10 +13,15 @@ namespace BookManagerASP.Repository
             _context = context;
         }
 
-        //public bool QuoteExists(int quoteId)
-        //{
-        //    return _context.Quotes.Any(q => q.Id == quoteId);
-        //}
+        public bool QuoteExists(int quoteId)
+        {
+            return _context.Quotes.Any(q => q.Id == quoteId);
+        }
+
+        public Quote GetQuote(int quoteId)
+        {
+            return _context.Quotes.Where(q => q.Id == quoteId).FirstOrDefault();
+        }
 
         public ICollection<Quote> GetQuotes()
         {

@@ -18,24 +18,24 @@ namespace BookManagerASP.Repository
             _userManager = userManager;
         }
 
-        public bool UserExists(string parameter)
+        public bool UserExists(string userNameOrEmail)
         {
-            if (parameter.Contains("@"))
+            if (userNameOrEmail.Contains("@"))
             {
-                return _userManager.Users.Any(u => u.Email == parameter);
+                return _userManager.Users.Any(u => u.Email == userNameOrEmail);
             }
 
-            return _userManager.Users.Any(u => u.UserName == parameter);
+            return _userManager.Users.Any(u => u.UserName == userNameOrEmail);
         }
 
-        public async Task<UserEntity> GetUser(string parameter)
+        public async Task<UserEntity> GetUser(string userNameOrEmail)
         {
-            if (parameter.Contains("@"))
+            if (userNameOrEmail.Contains("@"))
             {
-                return await _userManager.FindByEmailAsync(parameter);
+                return await _userManager.FindByEmailAsync(userNameOrEmail);
             }
 
-            return _userManager.Users.Where(un => un.UserName == parameter).FirstOrDefault();
+            return _userManager.Users.Where(un => un.UserName == userNameOrEmail).FirstOrDefault();
         }
 
 
