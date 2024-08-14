@@ -9,5 +9,8 @@ namespace BookManagerASP.Interfaces
         ICollection<Shelf> GetAllShelves();
         Shelf GetShelf(int shelfId);
         ICollection<Shelf> GetUserShelves(string userId);
+
+        bool CreateShelf(Shelf shelf);
+        bool Save();
     }
 }

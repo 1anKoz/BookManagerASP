@@ -14,10 +14,16 @@ namespace BookManagerASP.Controllers
     {
         public readonly IReviewRepository _reviewRepository;
         public readonly IMapper _mapper;
-        public ReviewController(IReviewRepository reviewRepository, IMapper mapper)
+        private readonly IBookRepository _bookRepository;
+        private readonly IUserEntityRepository _userEntityRepository;
+
+        public ReviewController(IReviewRepository reviewRepository, IMapper mapper,
+            IBookRepository bookRepository, IUserEntityRepository userEntityRepository)
         {
             _reviewRepository = reviewRepository;
             _mapper = mapper;
+            _bookRepository = bookRepository;
+            _userEntityRepository = userEntityRepository;
         }
 
         [HttpGet("AllReviews")]
@@ -63,5 +69,33 @@ namespace BookManagerASP.Controllers
 
             return Ok(reviewDto);
         }
+
+
+        //[HttpPost]
+        //[ProducesResponseType(204)]
+        //[ProducesResponseType(400)]
+        //public IActionResult CreateReview([FromBody] ReviewDto reviewDto,
+        //    [FromQuery] int userId, [FromQuery] int bookId)
+        //{
+        //    if (reviewDto == null)
+        //        return BadRequest(ModelState);
+
+        //    var review = _reviewRepository.GetAllReviews()
+        //        .Where(r => r.Id == reviewDto.Id).FirstOrDefault();
+
+        //    if (review != null)
+        //    {
+        //        ModelState.AddModelError("", "You have already reviewed this book");
+        //        return StatusCode(422, ModelState);
+        //    }
+
+        //    if(!ModelState.IsValid)
+        //        return BadRequest(ModelState);
+
+        //    var reviewMap = _mapper.Map<Review>(reviewDto);
+        //    reviewMap.
+
+        //    return Ok("Successfully created");
+        //}
     }
 }
