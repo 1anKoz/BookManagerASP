@@ -4,11 +4,11 @@ namespace BookManagerASP.Interfaces
 {
     public interface IBookPrivateRepository
     {
-        bool BookPrivateExists(int bookPrivateId);
-        BookPrivate GetBookPrivate(int bookPrivateId);
+        bool BookPrivateExists(int? bookPrivateId);
+        BookPrivate GetBookPrivate(int? bookPrivateId);
+        BookPrivate GetBookPrivate(string title = null);
         ICollection<BookPrivate> GetAllBookPrivates();
         ICollection<BookPrivate> GetUserBookPrivates(string userId);
-        BookPrivate GetBookPrivateByBookTitle(string title);
         ICollection<BookPrivate> GetBookPrivatesByBookAuthor(string author);
         ICollection<BookPrivate> GetFavouriteBookPrivates();
         ICollection<BookPrivate> GetBookPrivatesOnShelf(int shelfId);

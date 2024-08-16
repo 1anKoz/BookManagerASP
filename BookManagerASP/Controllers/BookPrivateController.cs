@@ -3,6 +3,7 @@ using BookManagerASP.Dto;
 using BookManagerASP.Interfaces;
 using BookManagerASP.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
 
 namespace BookManagerASP.Controllers
 {
@@ -27,6 +28,37 @@ namespace BookManagerASP.Controllers
             _quoteRepository = quoteRepository;
         }
 
+        [HttpGet("GetBookPrivate")]
+        [ProducesResponseType(200, Type = typeof(BookPrivate))]
+        [ProducesResponseType(400)]
+        public IActionResult GetBookPrivate([FromQuery] int? bookId = null, [FromQuery] string? title = null)
+        {
+            if (!bookId.HasValue && string.IsNullOrEmpty(title))
+                return BadRequest("Either bookId or title must be provided");
+
+            BookPrivate bookPrivate = null;
+
+            if (bookId.HasValue)
+            {
+                if (!_bookPrivateRepository.BookPrivateExists(bookId))
+                    return NotFound();
+                bookPrivate = _bookPrivateRepository.GetBookPrivate(bookId);
+            }
+            else if (title != null)
+            {
+                bookPrivate = _bookPrivateRepository.GetBookPrivate(title);
+
+                if (bookPrivate == null)
+                    return NotFound();
+            }
+            var bookPrivateDto = _mapper.Map<BookPrivateDto>(bookPrivate);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(bookPrivateDto);
+        }
+
         [HttpGet("GetBookPrivates/{author}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<BookPrivate>))]
         [ProducesResponseType(400)]
@@ -40,6 +72,49 @@ namespace BookManagerASP.Controllers
 
             return Ok(bookPrivates);
         }
+
+        [HttpGet("{shelfId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<BookPrivate>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetBookPrivatesOnShelf (int shelfId)
+        {
+            var bookPrivates = _mapper.Map<List<BookPrivateDto>>(
+                _bookPrivateRepository.GetBookPrivatesOnShelf(shelfId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(bookPrivates);
+        }
+
+        [HttpGet("BookPrivates/favourites")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<BookPrivate>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetFavouriteBookPrivates()
+        {
+            var bookPrivates = _mapper.Map<List<BookPrivateDto>>(
+                _bookPrivateRepository.GetFavouriteBookPrivates());
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(bookPrivates);
+        }
+
+        [HttpGet("BookPrivates/{userId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<BookPrivate>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetUserBookPrivates(string userId)
+        {
+            var bookPrivates = _mapper.Map<List<BookPrivateDto>>(
+                _bookPrivateRepository.GetUserBookPrivates(userId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(bookPrivates);
+        }
+
 
         [HttpPost]
         [ProducesResponseType(204)]

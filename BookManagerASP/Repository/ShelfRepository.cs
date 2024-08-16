@@ -32,7 +32,7 @@ namespace BookManagerASP.Repository
 
         public ICollection<Shelf> GetUserShelves(string userId)
         {
-            throw new NotImplementedException();
+            return _context.Shelves.Where(s => s.UserEntityId == userId).ToList();
         }
 
 

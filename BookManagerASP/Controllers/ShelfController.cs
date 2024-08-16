@@ -48,6 +48,19 @@ namespace BookManagerASP.Controllers
             return Ok(shelfDto);
         }
 
+        [HttpGet("/library/{userId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Shelf>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetUserShelves(string userId)
+        {
+            var shelves = _mapper.Map<List<ShelfDto>>(_shelfRepository.GetUserShelves(userId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(shelves);
+        }
+
 
         [HttpPost]
         [ProducesResponseType(204)]

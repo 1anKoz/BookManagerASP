@@ -27,11 +27,25 @@ namespace BookManagerASP.Repository
         {
             return _context.Quotes.OrderBy(q => q.Id).ToList();
         }
+
         public ICollection<Quote> GetFavouriteQuotes()
         {
             return _context.Quotes.Where(q => q.IsFavourite == true)
                 .OrderBy(q => q.Id).ToList();
         }
+
+        public ICollection<Quote> GetBookPrivateQuotes(int bookPrivateId)
+        {
+            return _context.Quotes.Where(
+                q => q.BookPrivateId == bookPrivateId).ToList();
+        }
+
+        public ICollection<Quote> GetUserQuotes(string userId)
+        {
+            return _context.Quotes.Where(
+                q => q.BookPrivate.Shelf.UserEntityId == userId).ToList();
+        }
+
 
         public bool CreateQuote(Quote quote)
         {
@@ -45,9 +59,5 @@ namespace BookManagerASP.Repository
             return saved > 0 ? true : false;
         }
 
-        public ICollection<Quote> GetBookPrivateQuotes(int bookPrivateId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

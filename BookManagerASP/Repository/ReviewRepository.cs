@@ -23,19 +23,6 @@ namespace BookManagerASP.Repository
             return _context.Reviews.ToList();
         }
 
-        //public ICollection<Review> GetBookReviews(int bookId)
-        //{
-        //    var bookUR = _context.BookUserReviews.Where(bur => bur.BookId == bookId).Include(r => r.Review).ToList();
-        //    var reviews = bookUR.Select(r => r.Review).ToList();
-        //    //var reviews = new List<Review>();
-        //    //foreach (var bookReview in bookUR)
-        //    //{
-        //    //    var review = bookReview.Review;
-        //    //    reviews.Add(review);
-        //    //}
-        //    return reviews;
-        //}
-
         public Review GetReview(int reviewId)
         {
             return _context.Reviews.Where(r => r.Id == reviewId).FirstOrDefault();
@@ -43,7 +30,11 @@ namespace BookManagerASP.Repository
 
         public ICollection<Review> GetUserReviews(string userId)
         {
-            throw new NotImplementedException();
+            return _context.Reviews.Where(r => r.UserEntityId == userId).ToList();
+        }
+        public ICollection<Review> GetBookReviews(int bookId)
+        {
+            return _context.Reviews.Where(r => r.BookId == bookId).ToList();
         }
 
 
@@ -59,9 +50,5 @@ namespace BookManagerASP.Repository
             return saved > 0 ? true : false;
         }
 
-        public ICollection<Review> GetBookReviews(int bookId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

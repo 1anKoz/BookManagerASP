@@ -14,7 +14,7 @@ namespace BookManagerASP.Repository
             _context = context;
         }
 
-        public bool BookPrivateExists(int bookPrivateId)
+        public bool BookPrivateExists(int? bookPrivateId)
         {
             return _context.Books.Any(bp => bp.Id == bookPrivateId);
         }
@@ -24,34 +24,45 @@ namespace BookManagerASP.Repository
             return _context.BooksPrivates.OrderBy(bp => bp.Id).ToList();
         }
 
-        public BookPrivate GetBookPrivate(int bookPrivateId)
+        public BookPrivate GetBookPrivate(int? bookPrivateId)
         {
-            return _context.BooksPrivates.Where(bp => bp.Id == bookPrivateId).FirstOrDefault();
+            return _context.BooksPrivates.Where(
+                bp => bp.Id == bookPrivateId).FirstOrDefault();
         }
 
-        public BookPrivate GetBookPrivateByBookTitle(string title)
+        public BookPrivate GetBookPrivate(string title = null)
         {
-            throw new NotImplementedException();
+            var query = _context.BooksPrivates.AsQueryable();
+
+            if (!string.IsNullOrEmpty(title))
+            {
+                query = query.Where(bp => bp.Book.Title == title);
+            }
+
+            return query.FirstOrDefault();
         }
 
         public ICollection<BookPrivate> GetBookPrivatesByBookAuthor(string author)
         {
-            return _context.BooksPrivates.Where(b => b.Book.Author == author).OrderBy(b => b.Id).ToList();
+            return _context.BooksPrivates.Where(
+                b => b.Book.Author == author).OrderBy(b => b.Id).ToList();
         }
 
         public ICollection<BookPrivate> GetBookPrivatesOnShelf(int shelfId)
         {
-            throw new NotImplementedException();
+            return _context.BooksPrivates.Where(b => b.ShelfId == shelfId).ToList();
         }
 
         public ICollection<BookPrivate> GetFavouriteBookPrivates()
         {
-            throw new NotImplementedException();
+            return _context.BooksPrivates.Where(bp => bp.IsFavourite == true)
+                .OrderBy(bp => bp.Id).ToList();
         }
 
         public ICollection<BookPrivate> GetUserBookPrivates(string userId)
         {
-            throw new NotImplementedException();
+            return _context.BooksPrivates.Where(
+                bp => bp.Shelf.UserEntityId == userId).ToList();
         }
 
 
