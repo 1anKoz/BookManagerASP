@@ -38,18 +38,31 @@ namespace BookManagerASP.Controllers
             return Ok(reviews);
         }
 
-        //[HttpGet("{bookId}/GetBookReviews")]
-        //[ProducesResponseType(200, Type = typeof(IEnumerable<Review>))]
-        //[ProducesResponseType(400)]
-        //public IActionResult GetBookReviews(int bookId)
-        //{
-        //    var reviews = _mapper.Map<List<ReviewDto>>(_reviewRepository.GetBookReviews(bookId));
+        [HttpGet("{bookId}/GetBookReviews")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Review>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetBookReviews(int bookId)
+        {
+            var reviews = _mapper.Map<List<ReviewDto>>(_reviewRepository.GetBookReviews(bookId));
 
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        //    return Ok(reviews);
-        //}
+            return Ok(reviews);
+        }
+
+        [HttpGet("{userId}/GetUserReviews")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Review>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetUserReviews(string userId)
+        {
+            var reviews = _mapper.Map<List<ReviewDto>>(_reviewRepository.GetUserReviews(userId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(reviews);
+        }
 
         [HttpGet("{reviewId}")]
         [ProducesResponseType(200, Type = typeof(Review))]
@@ -71,31 +84,38 @@ namespace BookManagerASP.Controllers
         }
 
 
-        //[HttpPost]
-        //[ProducesResponseType(204)]
-        //[ProducesResponseType(400)]
-        //public IActionResult CreateReview([FromBody] ReviewDto reviewDto,
-        //    [FromQuery] int userId, [FromQuery] int bookId)
-        //{
-        //    if (reviewDto == null)
-        //        return BadRequest(ModelState);
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> CreateReview([FromBody] ReviewDto reviewDto,
+            [FromQuery] string userId, [FromQuery] int bookId)
+        {
+            if (reviewDto == null)
+                return BadRequest(ModelState);
 
-        //    var review = _reviewRepository.GetAllReviews()
-        //        .Where(r => r.Id == reviewDto.Id).FirstOrDefault();
+            var review = _reviewRepository.GetAllReviews()
+                .Where(r => r.Id == reviewDto.Id).FirstOrDefault();
 
-        //    if (review != null)
-        //    {
-        //        ModelState.AddModelError("", "You have already reviewed this book");
-        //        return StatusCode(422, ModelState);
-        //    }
+            if (review != null)
+            {
+                ModelState.AddModelError("", "You have already reviewed this book");
+                return StatusCode(422, ModelState);
+            }
 
-        //    if(!ModelState.IsValid)
-        //        return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        //    var reviewMap = _mapper.Map<Review>(reviewDto);
-        //    reviewMap.
+            var reviewMap = _mapper.Map<Review>(reviewDto);
+            reviewMap.Book = _bookRepository.GetBook(bookId);
+            reviewMap.UserEntity = await _userEntityRepository.GetUser(userId);
 
-        //    return Ok("Successfully created");
-        //}
+            if (!_reviewRepository.CreateReview(reviewMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Successfully created");
+        }
     }
 }
