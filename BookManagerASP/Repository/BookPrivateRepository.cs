@@ -53,7 +53,8 @@ namespace BookManagerASP.Repository
 
         public ICollection<BookPrivate> GetFavouriteBookPrivates()
         {
-            throw new NotImplementedException();
+            return _context.BooksPrivates.Where(bp => bp.IsFavourite == true)
+                .OrderBy(bp => bp.Id).ToList();
         }
 
         public ICollection<BookPrivate> GetUserBookPrivates(string userId)

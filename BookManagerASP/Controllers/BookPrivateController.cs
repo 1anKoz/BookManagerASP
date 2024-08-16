@@ -3,6 +3,7 @@ using BookManagerASP.Dto;
 using BookManagerASP.Interfaces;
 using BookManagerASP.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
 
 namespace BookManagerASP.Controllers
 {
@@ -86,6 +87,19 @@ namespace BookManagerASP.Controllers
             return Ok(bookPrivates);
         }
 
+        [HttpGet("BookPrivates/favourites")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<BookPrivate>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetFavouriteBookPrivates()
+        {
+            var bookPrivates = _mapper.Map<List<BookPrivateDto>>(
+                _bookPrivateRepository.GetFavouriteBookPrivates());
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(bookPrivates);
+        }
 
         [HttpPost]
         [ProducesResponseType(204)]
