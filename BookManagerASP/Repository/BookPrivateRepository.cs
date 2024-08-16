@@ -26,7 +26,8 @@ namespace BookManagerASP.Repository
 
         public BookPrivate GetBookPrivate(int? bookPrivateId)
         {
-            return _context.BooksPrivates.Where(bp => bp.Id == bookPrivateId).FirstOrDefault();
+            return _context.BooksPrivates.Where(
+                bp => bp.Id == bookPrivateId).FirstOrDefault();
         }
 
         public BookPrivate GetBookPrivate(string title = null)
@@ -43,7 +44,8 @@ namespace BookManagerASP.Repository
 
         public ICollection<BookPrivate> GetBookPrivatesByBookAuthor(string author)
         {
-            return _context.BooksPrivates.Where(b => b.Book.Author == author).OrderBy(b => b.Id).ToList();
+            return _context.BooksPrivates.Where(
+                b => b.Book.Author == author).OrderBy(b => b.Id).ToList();
         }
 
         public ICollection<BookPrivate> GetBookPrivatesOnShelf(int shelfId)
@@ -59,7 +61,8 @@ namespace BookManagerASP.Repository
 
         public ICollection<BookPrivate> GetUserBookPrivates(string userId)
         {
-            throw new NotImplementedException();
+            return _context.BooksPrivates.Where(
+                bp => bp.Shelf.UserEntityId == userId).ToList();
         }
 
 

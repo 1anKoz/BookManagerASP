@@ -101,6 +101,21 @@ namespace BookManagerASP.Controllers
             return Ok(bookPrivates);
         }
 
+        [HttpGet("BookPrivates/{userId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<BookPrivate>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetUserBookPrivates(string userId)
+        {
+            var bookPrivates = _mapper.Map<List<BookPrivateDto>>(
+                _bookPrivateRepository.GetUserBookPrivates(userId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(bookPrivates);
+        }
+
+
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
