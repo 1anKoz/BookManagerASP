@@ -43,6 +43,34 @@ namespace BookManagerASP.Controllers
             return Ok(quotes);
         }
 
+        [HttpGet("Quote/user/{userId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Quote>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetUserQuotes(string userId)
+        {
+            var quotes = _mapper.Map<List<QuoteDto>>(
+                _quoteRepository.GetUserQuotes(userId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(quotes); 
+        }
+
+        [HttpGet("bp/{bookPrivateId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Quote>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetBookPrivateQuotes(int bookPrivateId)
+        {
+            var quotes = _mapper.Map<List<QuoteDto>>(
+                _quoteRepository.GetBookPrivateQuotes(bookPrivateId));
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(quotes);
+        }
+
 
         [HttpPost]
         [ProducesResponseType(204)]
