@@ -14,7 +14,7 @@ namespace BookManagerASP.Repository
             _context = context;
         }
 
-        public bool BookPrivateExists(int bookPrivateId)
+        public bool BookPrivateExists(int? bookPrivateId)
         {
             return _context.Books.Any(bp => bp.Id == bookPrivateId);
         }
@@ -24,14 +24,21 @@ namespace BookManagerASP.Repository
             return _context.BooksPrivates.OrderBy(bp => bp.Id).ToList();
         }
 
-        public BookPrivate GetBookPrivate(int bookPrivateId)
+        public BookPrivate GetBookPrivate(int? bookPrivateId)
         {
             return _context.BooksPrivates.Where(bp => bp.Id == bookPrivateId).FirstOrDefault();
         }
 
-        public BookPrivate GetBookPrivateByBookTitle(string title)
+        public BookPrivate GetBookPrivate(string title = null)
         {
-            throw new NotImplementedException();
+            var query = _context.BooksPrivates.AsQueryable();
+
+            if (!string.IsNullOrEmpty(title))
+            {
+                query = query.Where(bp => bp.Book.Title == title);
+            }
+
+            return query.FirstOrDefault();
         }
 
         public ICollection<BookPrivate> GetBookPrivatesByBookAuthor(string author)
@@ -41,7 +48,7 @@ namespace BookManagerASP.Repository
 
         public ICollection<BookPrivate> GetBookPrivatesOnShelf(int shelfId)
         {
-            throw new NotImplementedException();
+            return _context.BooksPrivates.Where(b => b.ShelfId == shelfId).ToList();
         }
 
         public ICollection<BookPrivate> GetFavouriteBookPrivates()
