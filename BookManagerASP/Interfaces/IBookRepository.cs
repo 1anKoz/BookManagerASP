@@ -13,6 +13,8 @@ namespace BookManagerASP.Interfaces
         int GetBookRating(int id);
         bool BookExists(int bookId);
 
+        bool UpdateBook (Book book);
+
         bool CreateBook(Book book);
         bool Save();
     }

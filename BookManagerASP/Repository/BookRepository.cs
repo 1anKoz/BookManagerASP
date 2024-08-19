@@ -17,6 +17,12 @@ namespace BookManagerASP.Repository
             return _context.Books.Any(p => p.Id == bookId);
         }
 
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+
 
         public ICollection<Book> GetBooks()
         {
@@ -67,10 +73,12 @@ namespace BookManagerASP.Repository
             _context.Add(book);
             return Save();
         }
-        public bool Save()
+
+
+        public bool UpdateBook(Book book)
         {
-            var saved = _context.SaveChanges();
-            return saved > 0 ? true : false;
+            _context.Update(book);
+            return Save();
         }
     }
 }
