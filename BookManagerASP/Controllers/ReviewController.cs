@@ -124,7 +124,7 @@ namespace BookManagerASP.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateReview(int reviewId, [FromBody] ReviewDto reviewDto)
+        public IActionResult UpdateReview(int reviewId, [FromBody] ReviewEditDto reviewDto)
         {
             if (reviewDto == null)
                 return BadRequest(ModelState);
@@ -138,9 +138,13 @@ namespace BookManagerASP.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var reviewMap = _mapper.Map<Review>(reviewDto);
+            var review = _reviewRepository.GetReview(reviewId);
+            if (review == null)
+                return NotFound();
+            
+            _mapper.Map(reviewDto, review);
 
-            if (!_reviewRepository.UpdateReview(reviewMap))
+            if (!_reviewRepository.UpdateReview(review))
             {
                 ModelState.AddModelError("", "Something went wrong while updating review");
                 return StatusCode(500, ModelState);

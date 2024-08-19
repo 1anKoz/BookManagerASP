@@ -1,4 +1,6 @@
-﻿namespace BookManagerASP.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BookManagerASP.Models
 {
     public class Book
     {
@@ -7,7 +9,8 @@
         public string Description { get; set; }
         public string Author { get; set; }
         public string CoverUrl { get; set; }
-        public int Isbn { get; set; }
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "ISBN has to be a 10 digit number")]
+        public string Isbn { get; set; }
 
         public ICollection<Review> Reviews { get; set; }
     }
