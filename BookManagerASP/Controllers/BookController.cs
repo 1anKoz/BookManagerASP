@@ -134,5 +134,34 @@ namespace BookManagerASP.Controllers
 
             return Ok("Successfully created");
         }
+
+
+        [HttpPut("{bookId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateBook(int bookId, [FromBody] BookDto bookDto)
+        {
+            if(bookDto == null)
+                return BadRequest(ModelState);
+
+            if(bookId != bookDto.Id)
+                return BadRequest(ModelState);
+
+            if(!_bookRepository.BookExists(bookId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var bookMap = _mapper.Map<Book>(bookDto);
+
+            if(!_bookRepository.UpdateBook(bookMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while updating book");
+                return StatusCode(500, ModelState);
+            }
+            return NoContent();
+        }
     }
 }

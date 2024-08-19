@@ -50,5 +50,11 @@ namespace BookManagerASP.Repository
             return saved > 0 ? true : false;
         }
 
+
+        public bool UpdateReview(Review review)
+        {
+            _context.Update(review);
+            return Save();
+        }
     }
 }

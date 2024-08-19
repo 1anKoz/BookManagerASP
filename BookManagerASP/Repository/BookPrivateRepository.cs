@@ -77,5 +77,10 @@ namespace BookManagerASP.Repository
             return saved > 0 ? true : false;
         }
 
+        public bool UpdateBookPrivate(int bookId, int shelfId, BookPrivate bookPrivate)
+        {
+            _context.Update(bookPrivate);
+            return Save();
+        }
     }
 }

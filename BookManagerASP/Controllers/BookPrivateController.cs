@@ -3,6 +3,7 @@ using BookManagerASP.Dto;
 using BookManagerASP.Interfaces;
 using BookManagerASP.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Reflection.Metadata.Ecma335;
 
 namespace BookManagerASP.Controllers
@@ -152,6 +153,37 @@ namespace BookManagerASP.Controllers
             }
 
             return Ok("Successfully created");
+        }
+
+        [HttpPut("{bookPrivateId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateBookPrivate(int bookPrivateId,
+            [FromBody] BookPrivateDto bookPrivateDto, [FromQuery] int shelfId,
+            [FromQuery] int bookId)
+        {
+            if (bookPrivateDto == null)
+                return BadRequest(ModelState);
+
+            if (bookPrivateId != bookPrivateDto.Id)
+                return BadRequest(ModelState);
+
+            if (!_bookRepository.BookExists(bookPrivateId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var bookPrivateMap = _mapper.Map<BookPrivate>(bookPrivateDto);
+
+            if (!_bookPrivateRepository.UpdateBookPrivate(bookId, shelfId, bookPrivateMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while updating bookPrivate");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
     }
 }

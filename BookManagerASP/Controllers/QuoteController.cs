@@ -2,6 +2,7 @@
 using BookManagerASP.Dto;
 using BookManagerASP.Interfaces;
 using BookManagerASP.Models;
+using BookManagerASP.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookManagerASP.Controllers
@@ -54,7 +55,7 @@ namespace BookManagerASP.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(quotes); 
+            return Ok(quotes);
         }
 
         [HttpGet("bp/{bookPrivateId}")]
@@ -82,13 +83,44 @@ namespace BookManagerASP.Controllers
 
             var quoteMap = _mapper.Map<Quote>(quoteCreate);
 
-            if(!_quoteRepository.CreateQuote(quoteMap))
+            if (!_quoteRepository.CreateQuote(quoteMap))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
             }
 
             return Ok(quoteMap);
+        }
+
+
+        [HttpPut("{quoteId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateQuote(int quoteId, [FromBody] QuoteDto quoteDto,
+            [FromQuery] int bookPrivateId)
+        {
+            if (quoteDto == null)
+                return BadRequest(ModelState);
+
+            if (quoteId != quoteDto.Id)
+                return BadRequest(ModelState);
+
+            if (!_quoteRepository.QuoteExists(quoteId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var quoteMap = _mapper.Map<Quote>(quoteDto);
+
+            if(!_quoteRepository.UpdateQuote(quoteMap, bookPrivateId))
+            {
+                ModelState.AddModelError("", "Something went wrong while updating quote");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
     }
 }
