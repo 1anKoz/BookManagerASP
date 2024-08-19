@@ -182,6 +182,7 @@ namespace BookManagerASP.Controllers
                 ModelState.AddModelError("", "Something went wrong while updating bookPrivate");
                 return StatusCode(500, ModelState);
             }
+
             return NoContent();
         }
     }

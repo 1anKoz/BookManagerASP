@@ -116,7 +116,7 @@ namespace BookManagerASP.Controllers
 
             if(!_quoteRepository.UpdateQuote(quoteMap, bookPrivateId))
             {
-                ModelState.AddModelError("", "Something went wrong while updating bookPrivate");
+                ModelState.AddModelError("", "Something went wrong while updating quote");
                 return StatusCode(500, ModelState);
             }
 

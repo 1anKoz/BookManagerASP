@@ -13,5 +13,7 @@ namespace BookManagerASP.Interfaces
 
         bool CreateReview(Review review);
         bool Save();
+
+        bool UpdateReview(Review review);
     }
 }

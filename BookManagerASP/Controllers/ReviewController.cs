@@ -5,6 +5,7 @@ using BookManagerASP.Models;
 using BookManagerASP.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using System.Net;
 
 namespace BookManagerASP.Controllers
 {
@@ -116,6 +117,36 @@ namespace BookManagerASP.Controllers
             }
 
             return Ok("Successfully created");
+        }
+
+
+        [HttpPut("{reviewId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateReview(int reviewId, [FromBody] ReviewDto reviewDto)
+        {
+            if (reviewDto == null)
+                return BadRequest(ModelState);
+
+            if (reviewId != reviewDto.Id)
+                return BadRequest(ModelState);
+
+            if (!_reviewRepository.ReviewExists(reviewId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var reviewMap = _mapper.Map<Review>(reviewDto);
+
+            if (!_reviewRepository.UpdateReview(reviewMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while updating review");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
     }
 }
