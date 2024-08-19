@@ -59,5 +59,10 @@ namespace BookManagerASP.Repository
             return saved > 0 ? true : false;
         }
 
+        public bool UpdateQuote(Quote quote, int bookPrivateId)
+        {
+            _context.Update(quote);
+            return Save();
+        }
     }
 }
