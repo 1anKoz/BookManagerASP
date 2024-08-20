@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BookManagerASP.Dto;
 using BookManagerASP.Models;
+using BookManagerASP.Queries;
 
 namespace BookManagerASP.Helper
 {
@@ -31,6 +32,9 @@ namespace BookManagerASP.Helper
             CreateMap<ShelfEditDto, Shelf>();
             CreateMap<QuoteEditDto, Quote>();
             CreateMap<BookPrivateEditDto, BookPrivate>();
+
+            CreateMap<BookQuery, BookDto>();
+            CreateMap<BookDto, BookQuery>();
         }
     }
 }

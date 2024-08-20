@@ -142,7 +142,7 @@ namespace BookManagerASP.Controllers
             var bookPrivateMap = _mapper.Map<BookPrivate>(bookPrivateDto);
 
             //bookPrivateMap.Shelf = _shelfRepository.GetShelf(shelfId);
-            bookPrivateMap.Book = _bookRepository.GetBook(bookId);
+            //bookPrivateMap.Book = _bookRepository.GetBook(bookId);
 
             if (!_bookPrivateRepository.CreateBookPrivate(bookPrivateMap))
             {
@@ -166,8 +166,8 @@ namespace BookManagerASP.Controllers
             if (bookPrivateId != bookPrivateDto.Id)
                 return BadRequest(ModelState);
 
-            if (!_bookRepository.BookExists(bookPrivateId))
-                return NotFound();
+            //if (!_bookRepository.BookExists(bookPrivateId))
+            //    return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest();

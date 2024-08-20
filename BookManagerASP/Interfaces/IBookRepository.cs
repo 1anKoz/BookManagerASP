@@ -1,17 +1,18 @@
 ﻿using BookManagerASP.Data.Enum;
 using BookManagerASP.Models;
+using BookManagerASP.Queries;
 
 namespace BookManagerASP.Interfaces
 {
     public interface IBookRepository
     {
-        ICollection<Book> GetBooks();
-        ICollection<Book> GetBooksByAuthor(string author);
-        Book GetBook(int id);
-        Book GetBook(string title = null);
-        //ICollection<Book> GetBooksByGenre(Genre genre);
-        int GetBookRating(int id);
-        bool BookExists(int bookId);
+        Book GetBook(BookQuery query);
+        ICollection<Book> GetBooks(BookQuery query);
+        //ICollection<Book> GetBooksByAuthor(string author);
+        //Book GetBook(string title = null);
+        ////ICollection<Book> GetBooksByGenre(Genre genre);
+        //int GetBookRating(int id);
+        bool BookExists(BookQuery query);
 
         bool UpdateBook (Book book);
 

@@ -1,6 +1,8 @@
 ﻿using BookManagerASP.Data;
 using BookManagerASP.Interfaces;
 using BookManagerASP.Models;
+using BookManagerASP.Queries;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookManagerASP.Repository
 {
@@ -12,9 +14,23 @@ namespace BookManagerASP.Repository
             _context = context;
         }
 
-        public bool BookExists(int bookId)
+
+        public bool BookExists(BookQuery query)
         {
-            return _context.Books.Any(p => p.Id == bookId);
+            var book = _context.Books;
+
+            if (query.Title != null)
+                return book.Any(b => b.Title == query.Title);
+            else if (query.Isbn != null)
+                return book.Any(b => b.Isbn == query.Isbn);
+            else if (query.Id != null)
+                return book.Any(b => b.Id == query.Id);
+            else if (query.Author != null)
+                return book.Any(b => b.Author == query.Author);
+            else if (query.Genre != null)
+                return book.Any(b => b.Genre == query.Genre);
+
+            return false;
         }
 
         public bool Save()
@@ -24,48 +40,78 @@ namespace BookManagerASP.Repository
         }
 
 
-        public ICollection<Book> GetBooks()
+        public Book GetBook(BookQuery query)
         {
-            return _context.Books.OrderBy(b => b.Id).ToList();
+            var book = _context.Books;
+            if(query.Title != null)
+                book.Where(b => b.Title == query.Title);
+            else if (query.Isbn != null)
+                book.Where(b => b.Isbn == query.Isbn);
+            else if (query.Id != null)
+                book.Where(b => b.Id == query.Id);
+
+            return book.FirstOrDefault();
         }
 
-        public ICollection<Book> GetBooksByAuthor(string author)
+        public ICollection<Book> GetBooks(BookQuery query)
         {
-            return _context.Books.Where(b => b.Author == author).OrderBy(b => b.Id).ToList();
+            var book = _context.Books;
+            if (query.Title != null)
+                book.Where(b => b.Title == query.Title);
+            if (query.Author != null)
+                book.Where(b => b.Author == query.Author);
+            if (query.Isbn != null)
+                book.Where(b => b.Isbn == query.Isbn);
+            if (query.Id != null)
+                book.Where(b => b.Id == query.Id);
+            if (query.Genre != null)
+                book.Where(b => b.Genre == query.Genre);
+
+            return book.ToList();
         }
 
-        public Book GetBook(int id)
-        {
-            return _context.Books.Where(b => b.Id == id).FirstOrDefault();
-        }
+        //public ICollection<Book> GetBooks()
+        //{
+        //    return _context.Books.OrderBy(b => b.Id).ToList();
+        //}
 
-        public Book GetBook(string title = null/*, string author = null*/)
-        {
-            var query = _context.Books.AsQueryable();
+        //public ICollection<Book> GetBooksByAuthor(string author)
+        //{
+        //    return _context.Books.Where(b => b.Author == author).OrderBy(b => b.Id).ToList();
+        //}
 
-            if (!string.IsNullOrEmpty(title))
-            {
-                query = query.Where(b => b.Title == title);
-            }
+        //public Book GetBook(int id)
+        //{
+        //    return _context.Books.Where(b => b.Id == id).FirstOrDefault();
+        //}
 
-            //if (!string.IsNullOrEmpty(author))
-            //{
-            //    query = query.Where(b => b.Author == author);
-            //}
+        //public Book GetBook(string title = null/*, string author = null*/)
+        //{
+        //    var query = _context.Books.AsQueryable();
 
-            return query.FirstOrDefault();
-        }
+        //    if (!string.IsNullOrEmpty(title))
+        //    {
+        //        query = query.Where(b => b.Title == title);
+        //    }
 
-        public int GetBookRating(int id)
-        {
-            var review = _context.Reviews.Where(b => b.Id == id);
+        //    //if (!string.IsNullOrEmpty(author))
+        //    //{
+        //    //    query = query.Where(b => b.Author == author);
+        //    //}
 
-            if (review.Count() <= 0)
-            {
-                return 0;
-            }
-            return (int)review.Sum(r => r.Rating) / review.Count();
-        }
+        //    return query.FirstOrDefault();
+        //}
+
+        //public int GetBookRating(int id)
+        //{
+        //    var review = _context.Reviews.Where(b => b.Id == id);
+
+        //    if (review.Count() <= 0)
+        //    {
+        //        return 0;
+        //    }
+        //    return (int)review.Sum(r => r.Rating) / review.Count();
+        //}
 
 
         public bool CreateBook(Book book)
