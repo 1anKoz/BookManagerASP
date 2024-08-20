@@ -28,6 +28,9 @@ namespace BookManagerASP.Helper
             CreateMap<BookPrivateDto, BookPrivate>();
 
             CreateMap<ReviewEditDto, Review>();
+            CreateMap<ShelfEditDto, Shelf>();
+            CreateMap<QuoteEditDto, Quote>();
+            CreateMap<BookPrivateEditDto, BookPrivate>();
         }
     }
 }

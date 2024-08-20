@@ -4,6 +4,7 @@ using BookManagerASP.Interfaces;
 using BookManagerASP.Models;
 using BookManagerASP.Repository;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace BookManagerASP.Controllers
 {
@@ -59,6 +60,39 @@ namespace BookManagerASP.Controllers
             }
 
             return Ok("User created successfully");
+        }
+
+        [HttpPut("{userName}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateUser(string userName, UserEntityDto userDto)
+        {
+            if (userDto == null)
+                return BadRequest(ModelState);
+
+            if (userName != userDto.UserName)
+                return BadRequest(ModelState);
+
+            if (!_userEntityRepository.UserExists(userName))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var userMap = _mapper.Map<UserEntity>(userDto);
+
+            var result = await _userEntityRepository.UpdateUserAsync(userMap);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+                return BadRequest(ModelState);
+            }
+
+            return NoContent();
         }
     }
 }

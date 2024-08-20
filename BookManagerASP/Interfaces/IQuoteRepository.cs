@@ -15,6 +15,6 @@ namespace BookManagerASP.Interfaces
         bool CreateQuote(Quote quote);
         bool Save();
 
-        bool UpdateQuote(Quote quote, int bookPrivateId);
+        bool UpdateQuote(Quote quote);
     }
 }

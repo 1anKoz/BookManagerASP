@@ -46,5 +46,12 @@ namespace BookManagerASP.Repository
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
+
+
+        public bool UpdateShelf(Shelf shelf)
+        {
+            _context.Update(shelf);
+            return Save();
+        }
     }
 }

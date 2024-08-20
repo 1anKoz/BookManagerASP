@@ -44,5 +44,9 @@ namespace BookManagerASP.Repository
             return await _userManager.CreateAsync(user, password);
         }
 
+        public async Task<IdentityResult> UpdateUserAsync(UserEntity user)
+        {
+            return await _userManager.UpdateAsync(user);
+        }
     }
 }

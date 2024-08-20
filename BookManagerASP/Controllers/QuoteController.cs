@@ -97,8 +97,7 @@ namespace BookManagerASP.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateQuote(int quoteId, [FromBody] QuoteDto quoteDto,
-            [FromQuery] int bookPrivateId)
+        public IActionResult UpdateQuote(int quoteId, [FromBody] QuoteEditDto quoteDto)
         {
             if (quoteDto == null)
                 return BadRequest(ModelState);
@@ -112,9 +111,13 @@ namespace BookManagerASP.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var quoteMap = _mapper.Map<Quote>(quoteDto);
+            var quote = _quoteRepository.GetQuote(quoteId);
+            if (quote == null)
+                return NotFound();
 
-            if(!_quoteRepository.UpdateQuote(quoteMap, bookPrivateId))
+            _mapper.Map(quoteDto, quote);
+
+            if(!_quoteRepository.UpdateQuote(quote))
             {
                 ModelState.AddModelError("", "Something went wrong while updating quote");
                 return StatusCode(500, ModelState);

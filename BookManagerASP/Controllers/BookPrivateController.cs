@@ -160,8 +160,7 @@ namespace BookManagerASP.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public IActionResult UpdateBookPrivate(int bookPrivateId,
-            [FromBody] BookPrivateDto bookPrivateDto, [FromQuery] int shelfId,
-            [FromQuery] int bookId)
+            [FromBody] BookPrivateEditDto bookPrivateDto, [FromQuery] int shelfId)
         {
             if (bookPrivateDto == null)
                 return BadRequest(ModelState);
@@ -175,9 +174,13 @@ namespace BookManagerASP.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var bookPrivateMap = _mapper.Map<BookPrivate>(bookPrivateDto);
+            var bookPrivate = _bookPrivateRepository.GetBookPrivate(bookPrivateId);
+            if (bookPrivate == null)
+                return NotFound();
 
-            if (!_bookPrivateRepository.UpdateBookPrivate(bookId, shelfId, bookPrivateMap))
+            _mapper.Map(bookPrivateDto, bookPrivate);
+
+            if (!_bookPrivateRepository.UpdateBookPrivate(shelfId, bookPrivate))
             {
                 ModelState.AddModelError("", "Something went wrong while updating bookPrivate");
                 return StatusCode(500, ModelState);

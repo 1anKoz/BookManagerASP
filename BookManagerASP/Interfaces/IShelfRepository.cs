@@ -12,5 +12,7 @@ namespace BookManagerASP.Interfaces
 
         bool CreateShelf(Shelf shelf);
         bool Save();
+
+        bool UpdateShelf(Shelf shelf);
     }
 }

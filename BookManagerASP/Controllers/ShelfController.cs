@@ -2,6 +2,7 @@
 using BookManagerASP.Dto;
 using BookManagerASP.Interfaces;
 using BookManagerASP.Models;
+using BookManagerASP.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookManagerASP.Controllers
@@ -92,6 +93,40 @@ namespace BookManagerASP.Controllers
             }
 
             return Ok("Successfully created");
+        }
+
+
+        [HttpPut("{shelfId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateReview(int shelfId, [FromBody] ShelfEditDto shelfDto)
+        {
+            if (shelfDto == null)
+                return BadRequest(ModelState);
+
+            if (shelfId != shelfDto.Id)
+                return BadRequest(ModelState);
+
+            if (!_shelfRepository.ShelfExists(shelfId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var shelf = _shelfRepository.GetShelf(shelfId);
+            if (shelf == null)
+                return NotFound();
+
+            _mapper.Map(shelfDto, shelf);
+
+            if (!_shelfRepository.UpdateShelf(shelf))
+            {
+                ModelState.AddModelError("", "Something went wrong while updating shelf");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
     }
 }
