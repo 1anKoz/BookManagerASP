@@ -10,5 +10,7 @@ namespace BookManagerASP.Interfaces
         Task<IdentityResult> CreateUserAsync(UserEntity user, string password);
 
         public bool UserExists(string userNameOrEmail);
+
+        Task<IdentityResult> UpdateUserAsync(UserEntity user);
     }
 }

@@ -16,6 +16,6 @@ namespace BookManagerASP.Interfaces
         bool Save();
         bool CreateBookPrivate(BookPrivate bookPrivate);
 
-        bool UpdateBookPrivate(int bookId, int shelfId, BookPrivate bookPrivate);
+        bool UpdateBookPrivate(int shelfId, BookPrivate bookPrivate);
     }
 }
