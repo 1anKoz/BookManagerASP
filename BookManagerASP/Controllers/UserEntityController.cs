@@ -3,6 +3,7 @@ using BookManagerASP.Dto;
 using BookManagerASP.Interfaces;
 using BookManagerASP.Models;
 using BookManagerASP.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -74,15 +75,17 @@ namespace BookManagerASP.Controllers
             if (userName != userDto.UserName)
                 return BadRequest(ModelState);
 
-            if (!_userEntityRepository.UserExists(userName))
+            var user = await _userEntityRepository.GetUser(userName);
+
+            if (user == null)
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var userMap = _mapper.Map<UserEntity>(userDto);
+            _mapper.Map(userDto, user);
 
-            var result = await _userEntityRepository.UpdateUserAsync(userMap);
+            var result = await _userEntityRepository.UpdateUserAsync(user);
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)

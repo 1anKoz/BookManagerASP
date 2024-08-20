@@ -82,5 +82,11 @@ namespace BookManagerASP.Repository
             _context.Update(bookPrivate);
             return Save();
         }
+
+        public bool DeleteBookPrivate(BookPrivate bookPrivate)
+        {
+            _context.Remove(bookPrivate);
+            return Save();
+        }
     }
 }

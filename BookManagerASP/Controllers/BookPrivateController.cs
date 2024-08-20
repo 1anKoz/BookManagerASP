@@ -188,5 +188,28 @@ namespace BookManagerASP.Controllers
 
             return NoContent();
         }
+
+
+        [HttpDelete("{bookPrivateId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteBookPrivate(int bookPrivateId)
+        {
+            if (!_bookPrivateRepository.BookPrivateExists(bookPrivateId))
+                return NotFound();
+
+            var bookPrivate = _bookPrivateRepository.GetBookPrivate(bookPrivateId);
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if(!_bookPrivateRepository.DeleteBookPrivate(bookPrivate))
+            {
+                ModelState.AddModelError("", "Sth went wrong while deleting BookPrivate");
+            }
+
+            return NoContent();
+        }
     }
 }
