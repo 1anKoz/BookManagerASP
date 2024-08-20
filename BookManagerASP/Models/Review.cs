@@ -1,9 +1,12 @@
-﻿namespace BookManagerASP.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BookManagerASP.Models
 {
     public class Review
     {
         public int Id { get; set; }
-        public int Rating { get; set; }
+        [Range(0,100)]
+        public byte Rating { get; set; }
         public string? Content { get; set; }
 
         public int BookId { get; set; }

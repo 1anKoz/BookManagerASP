@@ -141,10 +141,8 @@ namespace BookManagerASP.Controllers
 
             var bookPrivateMap = _mapper.Map<BookPrivate>(bookPrivateDto);
 
-            bookPrivateMap.Shelf = _shelfRepository.GetShelf(shelfId);
+            //bookPrivateMap.Shelf = _shelfRepository.GetShelf(shelfId);
             bookPrivateMap.Book = _bookRepository.GetBook(bookId);
-            //bookPrivateMap.Quotes.Add(_quoteRepository.GetQuote(quoteId));
-
 
             if (!_bookPrivateRepository.CreateBookPrivate(bookPrivateMap))
             {

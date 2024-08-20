@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BookManagerASP.Data.Enum;
+using System.ComponentModel.DataAnnotations;
 
 namespace BookManagerASP.Models
 {
@@ -11,6 +12,8 @@ namespace BookManagerASP.Models
         public string CoverUrl { get; set; }
         [RegularExpression(@"^\d{10}$", ErrorMessage = "ISBN has to be a 10 digit number")]
         public string Isbn { get; set; }
+        public Genre Genre { get; set; }
+
 
         public ICollection<Review> Reviews { get; set; }
     }

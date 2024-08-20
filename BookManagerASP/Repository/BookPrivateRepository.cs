@@ -50,7 +50,8 @@ namespace BookManagerASP.Repository
 
         public ICollection<BookPrivate> GetBookPrivatesOnShelf(int shelfId)
         {
-            return _context.BooksPrivates.Where(b => b.ShelfId == shelfId).ToList();
+            //return _context.BooksPrivates.Where(b => b.ShelfId == shelfId).ToList();
+            throw new NotImplementedException();
         }
 
         public ICollection<BookPrivate> GetFavouriteBookPrivates()
@@ -62,7 +63,7 @@ namespace BookManagerASP.Repository
         public ICollection<BookPrivate> GetUserBookPrivates(string userId)
         {
             return _context.BooksPrivates.Where(
-                bp => bp.Shelf.UserEntityId == userId).ToList();
+                bp => bp.UserEntityId == userId).ToList();
         }
 
 

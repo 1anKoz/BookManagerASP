@@ -1,4 +1,6 @@
-﻿namespace BookManagerASP.Dto
+﻿using BookManagerASP.Data.Enum;
+
+namespace BookManagerASP.Dto
 {
     public class BookDto
     {
@@ -8,5 +10,6 @@
         public string Author { get; set; }
         public string CoverUrl { get; set; }
         public int Isbn { get; set; }
+        public Genre Genre { get; set; }
     }
 }

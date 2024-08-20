@@ -43,7 +43,7 @@ namespace BookManagerASP.Repository
         public ICollection<Quote> GetUserQuotes(string userId)
         {
             return _context.Quotes.Where(
-                q => q.BookPrivate.Shelf.UserEntityId == userId).ToList();
+                q => q.BookPrivate.UserEntityId == userId).ToList();
         }
 
 
