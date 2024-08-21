@@ -23,86 +23,6 @@ namespace BookManagerASP.Controllers
             _mapper = mapper;
         }
 
-        //[HttpGet("AllBooks")]
-        //[ProducesResponseType(200, Type = typeof(IEnumerable<Book>))]
-        //public IActionResult GetBooks()
-        //{
-        //    var books = _mapper.Map<List<BookDto>>(_bookRepository.GetBooks());
-
-        //    if(!ModelState.IsValid)
-        //        return BadRequest(ModelState);
-
-        //    return Ok(books);
-        //}
-
-        //[HttpGet("{author}/GetBooks")]
-        //[ProducesResponseType(200, Type = typeof(IEnumerable<Book>))]
-        //[ProducesResponseType(400)]
-        //public IActionResult GetBooksByAuthor(string author)
-        //{
-        //    var books = _mapper.Map<List<BookDto>>(_bookRepository.GetBooksByAuthor(author));
-
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
-
-        //    return Ok(books);
-        //}
-
-        ////później będzie można zostawić tutaj szukanie po Id, a w metodzie GetBooksByAuthor
-        ////umożliwić szukanie po tytułach (umożliwi to być może szukanie i proponowanie książek
-        ////nawet jeśli niecały tytuł będzie wpisany). Oczywiście, wówczas również trzeba będzie
-        ////zwracać LISTĘ książek, których tytuły pasują do wpisywanego.
-        //[HttpGet("GetBook")]
-        //[ProducesResponseType(200, Type = typeof(Book))]
-        //[ProducesResponseType(400)]
-        //public IActionResult GetBook([FromQuery] int? bookId = null, [FromQuery] string? title = null)
-        //{
-        //    if (!bookId.HasValue && string.IsNullOrEmpty(title))
-        //    {
-        //        return BadRequest("Either bookId or title must be provided.");
-        //    }
-
-        //    Book book = null;
-
-        //    if (bookId.HasValue)
-        //    {
-        //        if (!_bookRepository.BookExists(bookId.Value))
-        //            return NotFound();
-
-        //        book = _bookRepository.GetBook(bookId.Value);
-        //    }
-        //    else if (!string.IsNullOrEmpty(title))
-        //    {
-        //        book = _bookRepository.GetBook(title);
-
-        //        if (book == null)
-        //            return NotFound();
-        //    }
-
-        //    var bookDto = _mapper.Map<BookDto>(book);
-
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
-
-        //    return Ok(bookDto);
-        //}
-
-        //[HttpGet("{bookId}/rating")]
-        //[ProducesResponseType(200, Type = typeof(int))]
-        //[ProducesResponseType(400)]
-        //public IActionResult GetBookRating(int bookId)
-        //{
-        //    if (!_bookRepository.BookExists(bookId))
-        //        return NotFound();
-
-        //    var rating = _bookRepository.GetBookRating(bookId);
-
-        //    if(!ModelState.IsValid)
-        //        return BadRequest(ModelState);
-
-        //    return Ok(rating);
-        //}
-
         [HttpGet("GetBook")]
         [ProducesResponseType(200, Type = typeof(int))]
         [ProducesResponseType(400)]
@@ -170,8 +90,13 @@ namespace BookManagerASP.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateBook([FromQuery] BookQuery query, [FromBody] BookDto bookDto)
+        public IActionResult UpdateBook([FromBody] BookDto bookDto,
+            [FromQuery] string? Isbn = null, [FromQuery] int? bookId = null)
         {
+            BookQuery query = new BookQuery();
+            query.Isbn = Isbn;
+            query.Id = bookId;
+
             if(bookDto == null)
                 return BadRequest(ModelState);
 

@@ -5,11 +5,11 @@ namespace BookManagerASP.Queries
 {
     public class BookQuery
     {
-        public int? Id { get; init; }
-        public string? Title { get; init; }
-        public string? Author { get; init; }
-        public string? Isbn { get; init; }
-        public Genre? Genre { get; init; }
+        public int? Id { get; set; }
+        public string? Title { get; set; }
+        public string? Author { get; set; }
+        public string? Isbn { get; set; }
+        public Genre? Genre { get; set; }
         //public float Rating { get; init; }
     }
 }
