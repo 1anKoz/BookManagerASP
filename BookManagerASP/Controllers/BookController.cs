@@ -142,7 +142,7 @@ namespace BookManagerASP.Controllers
                 return BadRequest(ModelState);
 
             var book = _bookRepository.GetBooks(new BookQuery())
-                .Where(b => b.Title.Trim().ToUpper() == bookDto.Title.TrimEnd().ToUpper())
+                .Where(b => b.Isbn.Trim() == bookDto.Isbn.Trim())
                 .FirstOrDefault();
 
             if(book != null)

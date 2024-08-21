@@ -9,7 +9,7 @@ namespace BookManagerASP.Dto
         public string Description { get; set; }
         public string Author { get; set; }
         public string CoverUrl { get; set; }
-        public int Isbn { get; set; }
+        public string Isbn { get; set; }
         public Genre Genre { get; set; }
     }
 }

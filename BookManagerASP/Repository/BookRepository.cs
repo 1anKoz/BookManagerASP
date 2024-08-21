@@ -42,32 +42,55 @@ namespace BookManagerASP.Repository
 
         public Book GetBook(BookQuery query)
         {
-            var book = _context.Books;
-            if(query.Title != null)
-                book.Where(b => b.Title == query.Title);
+            Book book = new Book();
+            if(query.Id != null)
+                book = _context.Books.Where(b => b.Id == query.Id).FirstOrDefault();
             else if (query.Isbn != null)
-                book.Where(b => b.Isbn == query.Isbn);
-            else if (query.Id != null)
-                book.Where(b => b.Id == query.Id);
+                book = _context.Books.Where(b => b.Isbn == query.Isbn).FirstOrDefault();
+            else if (query.Title != null)
+                book = _context.Books.Where(b => b.Title == query.Title).FirstOrDefault();
 
-            return book.FirstOrDefault();
+            return book;
         }
 
         public ICollection<Book> GetBooks(BookQuery query)
         {
-            var book = _context.Books;
-            if (query.Title != null)
-                book.Where(b => b.Title == query.Title);
-            if (query.Author != null)
-                book.Where(b => b.Author == query.Author);
-            if (query.Isbn != null)
-                book.Where(b => b.Isbn == query.Isbn);
-            if (query.Id != null)
-                book.Where(b => b.Id == query.Id);
-            if (query.Genre != null)
-                book.Where(b => b.Genre == query.Genre);
+            List<Book> books = new List<Book>();
 
-            return book.ToList();
+            if (query.Title != null && query.Author != null && query.Genre != null)
+                books = _context.Books.Where(b =>
+                b.Title == query.Title &
+                b.Author == query.Author &
+                b.Genre == query.Genre).ToList();
+
+            else if (query.Title != null && query.Author != null)
+                books = _context.Books.Where(b =>
+                b.Title == query.Title &
+                b.Author == query.Author).ToList();
+
+            else if (query.Title != null && query.Genre != null)
+                books = _context.Books.Where(b =>
+                b.Title == query.Title &
+                b.Genre == query.Genre).ToList();
+
+            else if (query.Author != null && query.Genre != null)
+                books = _context.Books.Where(b =>
+                b.Author == query.Author &
+                b.Genre == query.Genre).ToList();
+
+            else if (query.Title != null)
+                books = _context.Books.Where(b => b.Title == query.Title).ToList();
+
+            else if (query.Author != null)
+                books = _context.Books.Where(b => b.Author == query.Author).ToList();
+
+            else if (query.Genre != null)
+                books = _context.Books.Where(b => b.Genre == query.Genre).ToList();
+
+            else 
+                books = _context.Books.ToList();
+
+            return books;
         }
 
         //public ICollection<Book> GetBooks()
