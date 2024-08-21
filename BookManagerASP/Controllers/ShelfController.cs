@@ -2,6 +2,7 @@
 using BookManagerASP.Dto;
 using BookManagerASP.Interfaces;
 using BookManagerASP.Models;
+using BookManagerASP.Queries;
 using BookManagerASP.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,34 +14,32 @@ namespace BookManagerASP.Controllers
     {
         private readonly IShelfRepository _shelfRepository;
         private readonly IMapper _mapper;
+        private readonly IUserEntityRepository _userEntityRepository;
 
-        public ShelfController(IShelfRepository shelfRepository, IMapper mapper)
+        public ShelfController(IShelfRepository shelfRepository, IMapper mapper, IUserEntityRepository userEntityRepository)
         {
             _shelfRepository = shelfRepository;
             _mapper = mapper;
+            _userEntityRepository = userEntityRepository;
         }
 
-        [HttpGet("AllShelves")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Shelf>))]
-        public IActionResult GetAllShelves()
-        {
-            var shelves = _mapper.Map<List<ShelfDto>>(_shelfRepository.GetAllShelves());
-
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(shelves);
-        }
-
-        [HttpGet("/{shelfId}")]
+        [HttpGet("GetShelf")]
         [ProducesResponseType(200, Type = typeof(Shelf))]
         [ProducesResponseType(400)]
-        public IActionResult GetShelf(int shelfId)
+        public async Task<IActionResult> GetShelf([FromQuery] string userId,
+            [FromQuery] int? shelfId = null, [FromQuery] string? shelfName = null)
         {
-            if (!_shelfRepository.ShelfExists(shelfId))
+            ShelfQuery query = new ShelfQuery
+            {
+                UserEntityId = userId,
+                Name = shelfName,
+                Id = shelfId
+            };
+
+            if (!await _shelfRepository.ShelfExistsAsync(query))
                 return NotFound();
 
-            var shelf = _shelfRepository.GetShelf(shelfId);
+            var shelf = await _shelfRepository.GetShelfAsync(query);
             var shelfDto = _mapper.Map<ShelfDto>(shelf);
 
             if (!ModelState.IsValid)
@@ -49,12 +48,12 @@ namespace BookManagerASP.Controllers
             return Ok(shelfDto);
         }
 
-        [HttpGet("/library/{userId}")]
+        [HttpGet("UserShelves")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Shelf>))]
         [ProducesResponseType(400)]
-        public IActionResult GetUserShelves(string userId)
+        public async Task<IActionResult> GetUserShelves([FromQuery] string userId)
         {
-            var shelves = _mapper.Map<List<ShelfDto>>(_shelfRepository.GetUserShelves(userId));
+            var shelves = _mapper.Map<List<ShelfDto>>(await _shelfRepository.GetShelvesAsync(userId));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -66,13 +65,17 @@ namespace BookManagerASP.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateShelf([FromBody] ShelfDto shelfDto)
+        public async Task<IActionResult> CreateShelf([FromBody] ShelfDto shelfDto,
+            [FromQuery] UserEntityQuery query)
         {
             if (shelfDto == null)
                 return BadRequest(ModelState);
 
-            var shelf = _shelfRepository.GetAllShelves()
-                .Where(s => s.Name.Trim().ToUpper() == shelfDto.Name.TrimEnd().ToUpper())
+            UserEntity user = await _userEntityRepository.GetUser(query);
+
+            var shelves = await _shelfRepository.GetShelvesAsync(user.Id);
+
+            var shelf = shelves.Where(s => s.Name.Trim().ToUpper() == shelfDto.Name.TrimEnd().ToUpper())
                 .FirstOrDefault();
 
             if (shelf != null)
@@ -86,7 +89,7 @@ namespace BookManagerASP.Controllers
 
             var shelfMap = _mapper.Map<Shelf>(shelfDto);
 
-            if (!_shelfRepository.CreateShelf(shelfMap))
+            if (!await _shelfRepository.CreateShelfAsync(shelfMap))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
@@ -96,31 +99,39 @@ namespace BookManagerASP.Controllers
         }
 
 
-        [HttpPut("{shelfId}")]
+        [HttpPut("ShelfEdit")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateReview(int shelfId, [FromBody] ShelfEditDto shelfDto)
+        public async Task<IActionResult> UpdateShelf([FromBody] ShelfEditDto shelfDto,
+            [FromQuery] string userId, [FromQuery] int? shelfId = null, [FromQuery] string? shelfName = null)
         {
             if (shelfDto == null)
                 return BadRequest(ModelState);
 
-            if (shelfId != shelfDto.Id)
-                return BadRequest(ModelState);
+            //if (shelfId != shelfDto.Id)
+            //    return BadRequest(ModelState);
 
-            if (!_shelfRepository.ShelfExists(shelfId))
+            ShelfQuery query = new ShelfQuery
+            {
+                Id = shelfId,
+                Name = shelfName,
+                UserEntityId = userId
+            };
+
+            if (!await _shelfRepository.ShelfExistsAsync(query))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var shelf = _shelfRepository.GetShelf(shelfId);
+            var shelf = await _shelfRepository.GetShelfAsync(query);
             if (shelf == null)
                 return NotFound();
 
             _mapper.Map(shelfDto, shelf);
 
-            if (!_shelfRepository.UpdateShelf(shelf))
+            if (!await _shelfRepository.UpdateShelfAsync(shelf))
             {
                 ModelState.AddModelError("", "Something went wrong while updating shelf");
                 return StatusCode(500, ModelState);

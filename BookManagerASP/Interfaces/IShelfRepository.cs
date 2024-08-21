@@ -1,18 +1,18 @@
 ﻿using BookManagerASP.Models;
+using BookManagerASP.Queries;
 
 namespace BookManagerASP.Interfaces
 {
     public interface IShelfRepository
     {
-        bool ShelfExists(int shelfId);
+        Task<bool> SaveAsync();
+        Task<bool> ShelfExistsAsync(ShelfQuery query);
 
-        ICollection<Shelf> GetAllShelves();
-        Shelf GetShelf(int shelfId);
-        ICollection<Shelf> GetUserShelves(string userId);
+        Task<Shelf> GetShelfAsync(ShelfQuery query);
+        Task<ICollection<Shelf>> GetShelvesAsync(string userId);
 
-        bool CreateShelf(Shelf shelf);
-        bool Save();
+        Task<bool> CreateShelfAsync(Shelf shelf);
 
-        bool UpdateShelf(Shelf shelf);
+        Task<bool> UpdateShelfAsync(Shelf shelf);
     }
 }

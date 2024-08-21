@@ -1,6 +1,7 @@
 ﻿using BookManagerASP.Data;
 using BookManagerASP.Interfaces;
 using BookManagerASP.Models;
+using BookManagerASP.Queries;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -14,44 +15,57 @@ namespace BookManagerASP.Repository
         {
             _context = context;
         }
-        public bool ShelfExists(int shelfId)
-        {
-            return _context.Books.Any(s => s.Id == shelfId);
-        }
 
 
-        public ICollection<Shelf> GetAllShelves()
+        public async Task<bool> SaveAsync()
         {
-            return _context.Shelves.OrderBy(s => s.Id).ToList();
-        }
-
-        public Shelf GetShelf(int shelfId)
-        {
-            return _context.Shelves.Where(s => s.Id == shelfId).FirstOrDefault();
-        }
-
-        public ICollection<Shelf> GetUserShelves(string userId)
-        {
-            return _context.Shelves.Where(s => s.UserEntityId == userId).ToList();
-        }
-
-
-        public bool CreateShelf(Shelf shelf)
-        {
-            _context.Add(shelf);
-            return Save();
-        }
-        public bool Save()
-        {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
 
+        public async Task<bool> ShelfExistsAsync(ShelfQuery query)
+        {
+            if (query.Name != null)
+                return await _context.Shelves.AnyAsync(s => s.Name == query.Name);
+            else if (query.Id != null)
+                return await _context.Shelves.AnyAsync(s => s.Id == query.Id);
+            else if (query.UserEntityId != null)
+                return await _context.Shelves.AnyAsync(s => s.UserEntityId == query.UserEntityId);
 
-        public bool UpdateShelf(Shelf shelf)
+            return false;
+        }
+
+
+        public async Task<Shelf> GetShelfAsync(ShelfQuery query)
+        {
+            if (query.Name != null && query.UserEntityId != null)
+                return await _context.Shelves
+                    .Where(s => s.Name == query.Name && s.UserEntityId == query.UserEntityId)
+                    .FirstOrDefaultAsync();
+            else if (query.Id != null && query.UserEntityId != null)
+                return await _context.Shelves
+                    .Where(s => s.Id == query.Id && s.UserEntityId == query.UserEntityId)
+                    .FirstOrDefaultAsync();
+
+            return await _context.Shelves.FirstOrDefaultAsync();
+        }
+
+        public async Task<ICollection<Shelf>> GetShelvesAsync(string userId)
+        {
+            return await _context.Shelves.Where(s => s.UserEntityId == userId).ToListAsync();
+        }
+
+
+        public async Task<bool> CreateShelfAsync(Shelf shelf)
+        {
+            await _context.AddAsync(shelf);
+            return await SaveAsync();
+        }
+
+        public async Task<bool> UpdateShelfAsync(Shelf shelf)
         {
             _context.Update(shelf);
-            return Save();
+            return await SaveAsync();
         }
     }
 }
