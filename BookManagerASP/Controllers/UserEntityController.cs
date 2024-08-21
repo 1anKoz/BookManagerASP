@@ -2,6 +2,7 @@
 using BookManagerASP.Dto;
 using BookManagerASP.Interfaces;
 using BookManagerASP.Models;
+using BookManagerASP.Queries;
 using BookManagerASP.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,14 +26,14 @@ namespace BookManagerASP.Controllers
         [HttpGet("GetUser")]
         [ProducesResponseType(200, Type = typeof(UserEntity))]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> GetUserAsync(string userNameOrEmail)
+        public async Task<IActionResult> GetUserAsync([FromQuery] UserEntityQuery query)
         {
-            if (!_userEntityRepository.UserExists(userNameOrEmail))
+            if (!await _userEntityRepository.UserExistsAsync(query))
             {
                 return NotFound();
             }
 
-            var userEntity = await _userEntityRepository.GetUser(userNameOrEmail);
+            var userEntity = await _userEntityRepository.GetUser(query);
             var userDto = _mapper.Map<UserEntityDto>(userEntity);
 
             if (!ModelState.IsValid)
@@ -63,19 +64,26 @@ namespace BookManagerASP.Controllers
             return Ok("User created successfully");
         }
 
-        [HttpPut("{userName}")]
+        [HttpPut("UserEdit")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateUser(string userName, UserEntityDto userDto)
+        public async Task<IActionResult> UpdateUser([FromBody] UserEntityDto userDto,
+            [FromQuery] string? userName = null, [FromQuery] string? email = null,
+            [FromQuery] string? userId = null)
         {
+            UserEntityQuery query = new UserEntityQuery();
+            query.UserName = userName;
+            query.Email = email;
+            query.Id = userId;
+
             if (userDto == null)
                 return BadRequest(ModelState);
 
-            if (userName != userDto.UserName)
-                return BadRequest(ModelState);
+            //if (query.UserName != userDto.UserName || query.Email != userDto.Email)
+            //    return BadRequest(ModelState);
 
-            var user = await _userEntityRepository.GetUser(userName);
+            var user = await _userEntityRepository.GetUser(query);
 
             if (user == null)
                 return NotFound();

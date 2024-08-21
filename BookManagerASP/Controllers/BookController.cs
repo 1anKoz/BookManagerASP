@@ -100,8 +100,8 @@ namespace BookManagerASP.Controllers
             if(bookDto == null)
                 return BadRequest(ModelState);
 
-            if(query.Id != bookDto.Id)
-                return BadRequest(ModelState);
+            //if(query.Id != bookDto.Id)
+            //    return BadRequest(ModelState);
 
             if(!await _bookRepository.BookExistsAsync(query))
                 return NotFound();

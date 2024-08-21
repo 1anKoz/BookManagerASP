@@ -108,7 +108,7 @@ namespace BookManagerASP.Controllers
 
             var reviewMap = _mapper.Map<Review>(reviewDto);
             //reviewMap.Book = _bookRepository.GetBook(bookId);
-            reviewMap.UserEntity = await _userEntityRepository.GetUser(userId);
+            //reviewMap.UserEntity = await _userEntityRepository.GetUser(userId);
 
             if (!_reviewRepository.CreateReview(reviewMap))
             {

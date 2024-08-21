@@ -1,9 +1,11 @@
 ﻿using BookManagerASP.Interfaces;
 using BookManagerASP.Models;
+using BookManagerASP.Queries;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Reflection.Metadata;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BookManagerASP.Repository
 {
@@ -18,24 +20,30 @@ namespace BookManagerASP.Repository
             _userManager = userManager;
         }
 
-        public bool UserExists(string userNameOrEmail)
-        {
-            if (userNameOrEmail.Contains("@"))
-            {
-                return _userManager.Users.Any(u => u.Email == userNameOrEmail);
-            }
 
-            return _userManager.Users.Any(u => u.UserName == userNameOrEmail);
+        public async Task<bool> UserExistsAsync(UserEntityQuery query)
+        {
+            if (query.UserName != null)
+                return await _userManager.Users.AnyAsync(u => u.UserName == query.UserName);
+            else if (query.Email != null)
+                return await _userManager.Users.AnyAsync(u => u.Email == query.Email);
+            else if(query.Id != null)
+                return await _userManager.Users.AnyAsync(u => u.Id == query.Id);
+
+            return false;
         }
 
-        public async Task<UserEntity> GetUser(string userNameOrEmail)
+        public async Task<UserEntity> GetUser(UserEntityQuery query)
         {
-            if (userNameOrEmail.Contains("@"))
-            {
-                return await _userManager.FindByEmailAsync(userNameOrEmail);
-            }
-
-            return _userManager.Users.Where(un => un.UserName == userNameOrEmail).FirstOrDefault();
+            if (query.UserName != null)
+                return await _userManager.Users.Where(u => u.UserName == query.UserName)
+                    .FirstOrDefaultAsync();
+            else if (query.Email != null)
+                return await _userManager.Users.Where(u => u.Email == query.Email)
+                    .FirstOrDefaultAsync();
+            else
+                return await _userManager.Users.Where(u => u.Id == query.Id)
+                    .FirstOrDefaultAsync();
         }
 
 

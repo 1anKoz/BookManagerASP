@@ -2,8 +2,8 @@
 {
     public class UserEntityQuery
     {
-        public string? Id { get; init; }
-        public string? UserName { get; init; }
-        public string? Email { get; init; }
+        public string? Id { get; set; }
+        public string? UserName { get; set; }
+        public string? Email { get; set; }
     }
 }
