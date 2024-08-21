@@ -15,90 +15,89 @@ namespace BookManagerASP.Repository
         }
 
 
-        public bool BookExists(BookQuery query)
+        public async Task<bool> BookExistsAsync(BookQuery query)
         {
             var book = _context.Books;
 
             if (query.Isbn != null)
-                return book.Any(b => b.Isbn == query.Isbn);
+                return await book.AnyAsync(b => b.Isbn == query.Isbn);
             else if (query.Id != null)
-                return book.Any(b => b.Id == query.Id);
+                return await book.AnyAsync(b => b.Id == query.Id);
 
             return false;
         }
 
-        public bool Save()
+        public async Task<bool> SaveAsync()
         {
-            var saved = _context.SaveChanges();
+            var saved = await _context.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
 
 
-        public Book GetBook(BookQuery query)
+        public async Task<Book> GetBookAsync(BookQuery query)
         {
             Book book = new Book();
-            if(query.Id != null)
-                book = _context.Books.Where(b => b.Id == query.Id).FirstOrDefault();
+            if (query.Id != null)
+                book = await _context.Books.Where(b => b.Id == query.Id).FirstOrDefaultAsync();
             else if (query.Isbn != null)
-                book = _context.Books.Where(b => b.Isbn == query.Isbn).FirstOrDefault();
+                book = await _context.Books.Where(b => b.Isbn == query.Isbn).FirstOrDefaultAsync();
             else if (query.Title != null)
-                book = _context.Books.Where(b => b.Title == query.Title).FirstOrDefault();
+                book = await _context.Books.Where(b => b.Title == query.Title).FirstOrDefaultAsync();
 
             return book;
         }
 
-        public ICollection<Book> GetBooks(BookQuery query)
+        public async Task<ICollection<Book>> GetBooksAsync(BookQuery query)
         {
             List<Book> books = new List<Book>();
 
             if (query.Title != null && query.Author != null && query.Genre != null)
-                books = _context.Books.Where(b =>
+                books = await _context.Books.Where(b =>
                 b.Title == query.Title &
                 b.Author == query.Author &
-                b.Genre == query.Genre).ToList();
+                b.Genre == query.Genre).ToListAsync();
 
             else if (query.Title != null && query.Author != null)
-                books = _context.Books.Where(b =>
+                books = await _context.Books.Where(b =>
                 b.Title == query.Title &
-                b.Author == query.Author).ToList();
+                b.Author == query.Author).ToListAsync();
 
             else if (query.Title != null && query.Genre != null)
-                books = _context.Books.Where(b =>
+                books = await _context.Books.Where(b =>
                 b.Title == query.Title &
-                b.Genre == query.Genre).ToList();
+                b.Genre == query.Genre).ToListAsync();
 
             else if (query.Author != null && query.Genre != null)
-                books = _context.Books.Where(b =>
+                books = await _context.Books.Where(b =>
                 b.Author == query.Author &
-                b.Genre == query.Genre).ToList();
+                b.Genre == query.Genre).ToListAsync();
 
             else if (query.Title != null)
-                books = _context.Books.Where(b => b.Title == query.Title).ToList();
+                books = await _context.Books.Where(b => b.Title == query.Title).ToListAsync();
 
             else if (query.Author != null)
-                books = _context.Books.Where(b => b.Author == query.Author).ToList();
+                books = await _context.Books.Where(b => b.Author == query.Author).ToListAsync();
 
             else if (query.Genre != null)
-                books = _context.Books.Where(b => b.Genre == query.Genre).ToList();
+                books = await _context.Books.Where(b => b.Genre == query.Genre).ToListAsync();
 
-            else 
-                books = _context.Books.ToList();
+            else
+                books = await _context.Books.ToListAsync();
 
             return books;
         }
 
 
-        public bool CreateBook(Book book)
+        public async Task<bool> CreateBookAsync(Book book)
         {
-            _context.Add(book);
-            return Save();
+            await _context.AddAsync(book);
+            return await SaveAsync();
         }
 
-
-        public bool UpdateBook(Book book)
+        public async Task<bool> UpdateBookAsync(Book book)
         {
             _context.Update(book);
-            return Save();
+            return await SaveAsync();
         }
     }
 }

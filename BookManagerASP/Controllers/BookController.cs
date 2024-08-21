@@ -26,12 +26,12 @@ namespace BookManagerASP.Controllers
         [HttpGet("GetBook")]
         [ProducesResponseType(200, Type = typeof(int))]
         [ProducesResponseType(400)]
-        public IActionResult GetBook([FromQuery] BookQuery query)
+        public async Task<IActionResult> GetBook([FromQuery] BookQuery query)
         {
-            if (!_bookRepository.BookExists(query))
+            if (!await _bookRepository.BookExistsAsync(query))
                 return NotFound();
 
-            var book = _mapper.Map<BookDto>(_bookRepository.GetBook(query));
+            var book = _mapper.Map<BookDto>(await _bookRepository.GetBookAsync(query));
 
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -42,9 +42,9 @@ namespace BookManagerASP.Controllers
         [HttpGet("Get")]
         [ProducesResponseType(200, Type = typeof(int))]
         [ProducesResponseType(400)]
-        public IActionResult GetBooks([FromQuery] BookQuery query)
+        public async Task<IActionResult> GetBooks([FromQuery] BookQuery query)
         {
-            var books = _mapper.Map<List<BookDto>>(_bookRepository.GetBooks(query));
+            var books = _mapper.Map<List<BookDto>>(await _bookRepository.GetBooksAsync(query));
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -56,14 +56,14 @@ namespace BookManagerASP.Controllers
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
-        public IActionResult CreateBook([FromBody] BookDto bookDto)
+        public async Task<IActionResult> CreateBook([FromBody] BookDto bookDto)
         {
             if(bookDto == null)
                 return BadRequest(ModelState);
 
-            var book = _bookRepository.GetBooks(new BookQuery())
-                .Where(b => b.Isbn.Trim() == bookDto.Isbn.Trim())
-                .FirstOrDefault();
+            var books = await _bookRepository.GetBooksAsync(new BookQuery());
+
+            var book = books.Where(b => b.Isbn.Trim() == bookDto.Isbn.Trim()).FirstOrDefault();
 
             if(book != null)
             {
@@ -76,7 +76,7 @@ namespace BookManagerASP.Controllers
 
             var bookMap = _mapper.Map<Book>(bookDto);
 
-            if(!_bookRepository.CreateBook(bookMap))
+            if(!await _bookRepository.CreateBookAsync(bookMap))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
@@ -90,7 +90,7 @@ namespace BookManagerASP.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateBook([FromBody] BookDto bookDto,
+        public async Task<IActionResult> UpdateBook([FromBody] BookDto bookDto,
             [FromQuery] string? Isbn = null, [FromQuery] int? bookId = null)
         {
             BookQuery query = new BookQuery();
@@ -103,7 +103,7 @@ namespace BookManagerASP.Controllers
             if(query.Id != bookDto.Id)
                 return BadRequest(ModelState);
 
-            if(!_bookRepository.BookExists(query))
+            if(!await _bookRepository.BookExistsAsync(query))
                 return NotFound();
 
             if (!ModelState.IsValid)
@@ -111,7 +111,7 @@ namespace BookManagerASP.Controllers
 
             var bookMap = _mapper.Map<Book>(bookDto);
 
-            if(!_bookRepository.UpdateBook(bookMap))
+            if(!await _bookRepository.UpdateBookAsync(bookMap))
             {
                 ModelState.AddModelError("", "Something went wrong while updating book");
                 return StatusCode(500, ModelState);

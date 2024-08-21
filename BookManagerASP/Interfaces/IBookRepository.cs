@@ -6,14 +6,14 @@ namespace BookManagerASP.Interfaces
 {
     public interface IBookRepository
     {
-        Book GetBook(BookQuery query);
-        ICollection<Book> GetBooks(BookQuery query);
+        Task <Book> GetBookAsync(BookQuery query);
+        Task<ICollection<Book>> GetBooksAsync(BookQuery query);
 
-        bool BookExists(BookQuery query);
+        Task<bool> BookExistsAsync(BookQuery query);
 
-        bool UpdateBook (Book book);
+        Task<bool> UpdateBookAsync(Book book);
 
-        bool CreateBook(Book book);
-        bool Save();
+        Task<bool> CreateBookAsync(Book book);
+        Task<bool> SaveAsync();
     }
 }
